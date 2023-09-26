@@ -71,6 +71,7 @@ public class SecurityConfig {
 
       authProvider.setUserDetailsService(userDetailsService);
       authProvider.setPasswordEncoder(passwordEncoder());
+      System.out.println("hello");
 
       return authProvider;
   }
