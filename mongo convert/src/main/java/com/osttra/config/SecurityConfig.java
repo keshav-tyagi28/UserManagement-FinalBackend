@@ -126,9 +126,10 @@ public class SecurityConfig {
           auth.antMatchers("/api/auth/**").permitAll()
               .antMatchers("/api/test/**").permitAll()
               .antMatchers("/signin").permitAll()
-              .antMatchers("/users/**").hasRole("ADMIN")
+              .antMatchers("/users/**").permitAll()
               .antMatchers("/usergroups/**").permitAll()
-              .antMatchers("/all").hasRole("CUSTOMER")      
+              .antMatchers("/all").hasRole("CUSTOMER")  
+              .antMatchers("/api/**").permitAll()
               .anyRequest().authenticated()
         );
 

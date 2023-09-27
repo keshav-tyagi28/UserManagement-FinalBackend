@@ -1,4 +1,4 @@
-package com.osttra.repository;
+package com.osttra.repository.temaDatabase;
 
 
 import org.springframework.data.mongodb.repository.MongoRepository;

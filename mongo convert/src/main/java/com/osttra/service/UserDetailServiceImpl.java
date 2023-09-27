@@ -18,7 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.osttra.entity.User;
-import com.osttra.repository.UserRepository;
+import com.osttra.repository.temaDatabase.UserRepository;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailService{

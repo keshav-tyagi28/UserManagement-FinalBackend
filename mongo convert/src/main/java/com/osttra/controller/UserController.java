@@ -38,9 +38,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.osttra.helper.JWTHelper;
-import com.osttra.repository.UserGroupRepository;
-import com.osttra.repository.UserRepository;
-
+import com.osttra.repository.temaDatabase.UserGroupRepository;
+import com.osttra.repository.temaDatabase.UserRepository;
 import com.osttra.service.CustomUserDetailsService;
 
 import com.osttra.service.UserDetailServiceImpl;
