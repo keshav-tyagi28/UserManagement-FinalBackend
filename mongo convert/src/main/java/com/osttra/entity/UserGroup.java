@@ -31,7 +31,7 @@ public class UserGroup {
 	private Set<String> userId = new HashSet<>();
 	
 
-	private Set<String> ExceptionId = new HashSet<>();
+	
 	
 	
 }

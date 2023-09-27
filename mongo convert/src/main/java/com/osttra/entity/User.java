@@ -50,7 +50,7 @@ public class User {
 	
 	private Set<String> userGroupsId = new HashSet<>();
 	
-	private Set<String> ExceptionId = new HashSet<>();
+	
 	
 
 }

@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -298,6 +299,34 @@ public class UserGroupController {
 	    
 	    
 	    ///////////////////////////////////////////////// Mapping //////////////////////////////////////////////////////////////////
+	    
+	    
+	    @PostMapping("/addusers/{groupId}")
+	    public ResponseEntity<Object> addmultiple(@RequestBody Map<String, String[]> requestBody, @PathVariable String groupId, HttpServletRequest request) {
+	       
+	    	 String[] userIds = requestBody.get("userIds");
+	    	 
+	        for (String userId : userIds) {
+	        	User user = userdetailservice.getUserById(userId);
+
+				if (user != null) {
+	        	ResponseEntity<Object> response= addUserGroup(userId, groupId,request);
+				}
+				else
+				{
+					CustomResponse<String> errorResponse = new CustomResponse<>("", "User not found",
+							HttpStatus.NOT_FOUND.value(), request.getServletPath());
+					return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+				}
+				
+				
+				
+	        }
+	        
+	        return ResponseEntity.ok("Users added successfully"); 
+	    
+	    }
+	    
 	    
 	    
 		@PostMapping("/addusergroup/{userId}/{groupId}")
