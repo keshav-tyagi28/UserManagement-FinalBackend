@@ -1,6 +1,7 @@
 package com.osttra.config;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,6 +26,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 //	  if (!userDetails.getAuthorities().stream()
 //    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) 
 
+    private static final Logger LOGGER = Logger.getLogger(JWTAuthenticationFilter.class.getName());
 
 	@Autowired
 	JWTHelper jwtHelper;
@@ -34,7 +36,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		System.out.println("inside JWTAuthenticationFilter...");
+        LOGGER.info("Inside JWTAuthenticationFilter...");
 		String tokenHeader = request.getHeader("Authorization");
 		String token = null;
 		String username = null;
@@ -57,7 +59,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			} else {
-				System.out.println();
+                LOGGER.warning("Authentication failed for token: " + token);
 			}
 			
 		}

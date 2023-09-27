@@ -6,6 +6,7 @@ package com.osttra.config;
  
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 import java.util.Map;
 
  
@@ -50,7 +51,7 @@ public class SecurityConfig {
   @Autowired
   CustomUserDetailsService userDetailsService;
 
- 
+  private static final Logger LOGGER = Logger.getLogger(SecurityConfig.class.getName());
 
   @Autowired
   private AuthEntryPointJwt unauthorizedHandler;
@@ -71,7 +72,8 @@ public class SecurityConfig {
 
       authProvider.setUserDetailsService(userDetailsService);
       authProvider.setPasswordEncoder(passwordEncoder());
-      System.out.println("hello");
+      
+      LOGGER.info("Authentication provider initialized.");
 
       return authProvider;
   }
@@ -90,7 +92,7 @@ public class SecurityConfig {
           Map<String, String> responseBody = new HashMap<>();
           responseBody.put("message", "Access denied. You do not have the required role to access this resource.");
 
- 
+          LOGGER.warning("Access denied: " + e.getMessage());
 
           ObjectMapper objectMapper = new ObjectMapper();
           objectMapper.writeValue(response.getWriter(), responseBody);
@@ -130,6 +132,7 @@ public class SecurityConfig {
               .antMatchers("/usergroups/**").permitAll()
               .antMatchers("/all").hasRole("CUSTOMER")  
               .antMatchers("/api/**").permitAll()
+
               .anyRequest().authenticated()
         );
 
@@ -139,6 +142,9 @@ public class SecurityConfig {
  
 
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    
+    LOGGER.info("Security filter chain configured.");
+
 
     return http.build();
   }
