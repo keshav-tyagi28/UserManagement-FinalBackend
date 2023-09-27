@@ -1,0 +1,556 @@
+2023-09-27 12:36:59.419  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:36:59.419  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:36:59.608  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:36:59.663  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 25 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:36:59.714  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:36:59.714  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:36:59.714  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:36:59.742  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:36:59.742  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 322 ms
+2023-09-27 12:36:59.773  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@27e53f8e], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@72b20787], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:36:59.778  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d4931c0f3a27e780d2da', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:133, serverValue:876}] to localhost:27017
+2023-09-27 12:36:59.778  INFO 10596 --- [cluster-ClusterId{value='6513d4931c0f3a27e780d2da', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:132, serverValue:877}] to localhost:27017
+2023-09-27 12:36:59.779  INFO 10596 --- [cluster-ClusterId{value='6513d4931c0f3a27e780d2da', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=4136600}
+2023-09-27 12:36:59.815  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:36:59.826  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:36:59.844  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1f74a768, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6fef91a1, org.springframework.security.web.context.SecurityContextPersistenceFilter@1de7e468, org.springframework.security.web.header.HeaderWriterFilter@1e43bb31, org.springframework.security.web.authentication.logout.LogoutFilter@30580669, com.osttra.config.JWTAuthenticationFilter@5126f3a1, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4bf00d8d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4869bdf1, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6ba8767f, org.springframework.security.web.session.SessionManagementFilter@4423c5c3, org.springframework.security.web.access.ExceptionTranslationFilter@231eabe2, org.springframework.security.web.access.intercept.AuthorizationFilter@7e8c453f]
+2023-09-27 12:36:59.916  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:36:59.931  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:36:59.935  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 0.534 seconds (JVM running for 9884.792)
+2023-09-27 12:36:59.937  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   LogFileWebEndpointAutoConfiguration#logFileWebEndpoint matched:
+      - Log File found logging.file.name tema.log (LogFileWebEndpointAutoConfiguration.LogFileCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.boot.actuate.logging.LogFileWebEndpoint; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+    None
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2023-09-27 12:40:18.645  INFO 10596 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2023-09-27 12:40:18.677  INFO 10596 --- [Thread-244] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-09-27 12:40:18.681  WARN 10596 --- [Thread-244] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-ClusterId{value='6513d4931c0f3a27e780d2da', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/sun.nio.ch.Net.poll(Native Method)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:285)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+ java.base@17.0.7/java.net.Socket$SocketInputStream.read(Socket.java:966)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:110)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:135)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:713)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveMessageWithAdditionalTimeout(InternalStreamConnection.java:571)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:410)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:369)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:221)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:157)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:40:18.683  WARN 10596 --- [Thread-244] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-rtt-ClusterId{value='6513d4931c0f3a27e780d2da', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/java.lang.Thread.sleep(Native Method)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.waitForNext(DefaultServerMonitor.java:443)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.access$1500(DefaultServerMonitor.java:64)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$RoundTripTimeRunnable.run(DefaultServerMonitor.java:415)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:40:18.684  WARN 10596 --- [Thread-244] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [MaintenanceTimer-61-thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.7/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.7/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:40:18.790  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:40:18.790  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:40:18.970  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:40:18.984  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 13 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:40:19.032  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:40:19.032  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:40:19.032  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:40:19.054  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:40:19.054  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 261 ms
+2023-09-27 12:40:19.079  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@570a66ec], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@2c00624c], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:40:19.085  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d55b1c0f3a27e780d2db', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:135, serverValue:878}] to localhost:27017
+2023-09-27 12:40:19.086  INFO 10596 --- [cluster-ClusterId{value='6513d55b1c0f3a27e780d2db', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:134, serverValue:879}] to localhost:27017
+2023-09-27 12:40:19.086  INFO 10596 --- [cluster-ClusterId{value='6513d55b1c0f3a27e780d2db', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=4218400}
+2023-09-27 12:40:19.116  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:40:19.127  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:40:19.141  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4c7e34c5, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@475f01c7, org.springframework.security.web.context.SecurityContextPersistenceFilter@17cb3453, org.springframework.security.web.header.HeaderWriterFilter@7f086155, org.springframework.security.web.authentication.logout.LogoutFilter@7d5ece9b, com.osttra.config.JWTAuthenticationFilter@3733bc0a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@621b5602, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5e2591dd, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6bdd3bc4, org.springframework.security.web.session.SessionManagementFilter@6d001624, org.springframework.security.web.access.ExceptionTranslationFilter@cead6d, org.springframework.security.web.access.intercept.AuthorizationFilter@3794e679]
+2023-09-27 12:40:19.216  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:40:19.236  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:40:19.241  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 0.464 seconds (JVM running for 10084.097)
+2023-09-27 12:40:19.242  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2023-09-27 12:42:41.427  INFO 10596 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2023-09-27 12:42:41.452  INFO 10596 --- [Thread-248] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-09-27 12:42:41.455  WARN 10596 --- [Thread-248] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-ClusterId{value='6513d55b1c0f3a27e780d2db', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/sun.nio.ch.Net.poll(Native Method)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:285)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+ java.base@17.0.7/java.net.Socket$SocketInputStream.read(Socket.java:966)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:110)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:135)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:713)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveMessageWithAdditionalTimeout(InternalStreamConnection.java:571)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:410)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:369)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:221)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:157)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:42:41.456  WARN 10596 --- [Thread-248] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-rtt-ClusterId{value='6513d55b1c0f3a27e780d2db', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/java.lang.Thread.sleep(Native Method)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.waitForNext(DefaultServerMonitor.java:443)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.access$1500(DefaultServerMonitor.java:64)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$RoundTripTimeRunnable.run(DefaultServerMonitor.java:415)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:42:41.458  WARN 10596 --- [Thread-248] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [MaintenanceTimer-62-thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.7/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.7/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:42:41.570  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:42:41.570  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:42:41.739  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:42:41.754  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 13 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:42:41.807  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:42:41.807  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:42:41.807  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:42:41.828  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:42:41.828  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 256 ms
+2023-09-27 12:42:41.856  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@6ff4de1d], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@12a7802b], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:42:41.861  INFO 10596 --- [cluster-ClusterId{value='6513d5e91c0f3a27e780d2dc', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:136, serverValue:880}] to localhost:27017
+2023-09-27 12:42:41.861  INFO 10596 --- [cluster-ClusterId{value='6513d5e91c0f3a27e780d2dc', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=3560600}
+2023-09-27 12:42:41.863  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d5e91c0f3a27e780d2dc', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:137, serverValue:881}] to localhost:27017
+2023-09-27 12:42:41.889  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:42:41.896  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Authentication provider initialized.
+2023-09-27 12:42:41.900  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:42:41.912  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Security filter chain configured.
+2023-09-27 12:42:41.915  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3e53244a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4fdad7d8, org.springframework.security.web.context.SecurityContextPersistenceFilter@17bc8ac0, org.springframework.security.web.header.HeaderWriterFilter@4e3b7858, org.springframework.security.web.authentication.logout.LogoutFilter@1e2cd4, com.osttra.config.JWTAuthenticationFilter@1ce3453d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1e1416, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@15f255f5, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3e483358, org.springframework.security.web.session.SessionManagementFilter@56e61ea3, org.springframework.security.web.access.ExceptionTranslationFilter@5cf97998, org.springframework.security.web.access.intercept.AuthorizationFilter@778a8867]
+2023-09-27 12:42:41.989  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:42:42.007  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:42:42.011  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 0.46 seconds (JVM running for 10226.86)
+2023-09-27 12:42:42.013  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2023-09-27 12:43:43.416  INFO 10596 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2023-09-27 12:43:43.441  INFO 10596 --- [Thread-252] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-09-27 12:43:43.446  WARN 10596 --- [Thread-252] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-ClusterId{value='6513d5e91c0f3a27e780d2dc', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/sun.nio.ch.Net.poll(Native Method)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:285)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+ java.base@17.0.7/java.net.Socket$SocketInputStream.read(Socket.java:966)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:110)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:135)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:713)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveMessageWithAdditionalTimeout(InternalStreamConnection.java:571)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:410)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:369)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:221)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:157)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:43:43.447  WARN 10596 --- [Thread-252] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-rtt-ClusterId{value='6513d5e91c0f3a27e780d2dc', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/java.lang.Thread.sleep(Native Method)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.waitForNext(DefaultServerMonitor.java:443)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.access$1500(DefaultServerMonitor.java:64)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$RoundTripTimeRunnable.run(DefaultServerMonitor.java:415)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:43:43.449  WARN 10596 --- [Thread-252] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [MaintenanceTimer-63-thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.7/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.7/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:43:43.580  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:43:43.580  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:43:43.749  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:43:43.763  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:43:43.805  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:43:43.806  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:43:43.806  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:43:43.839  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:43:43.839  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 258 ms
+2023-09-27 12:43:43.865  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@1b98f3df], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@27412bf2], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:43:43.871  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d6271c0f3a27e780d2dd', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:139, serverValue:882}] to localhost:27017
+2023-09-27 12:43:43.872  INFO 10596 --- [cluster-ClusterId{value='6513d6271c0f3a27e780d2dd', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:138, serverValue:883}] to localhost:27017
+2023-09-27 12:43:43.872  INFO 10596 --- [cluster-ClusterId{value='6513d6271c0f3a27e780d2dd', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=4799000}
+2023-09-27 12:43:43.897  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:43:43.903  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Authentication provider initialized.
+2023-09-27 12:43:43.907  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:43:43.917  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Security filter chain configured.
+2023-09-27 12:43:43.921  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2f50aaaa, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@480451a, org.springframework.security.web.context.SecurityContextPersistenceFilter@74ffdaac, org.springframework.security.web.header.HeaderWriterFilter@1d046b93, org.springframework.security.web.authentication.logout.LogoutFilter@1b559db, com.osttra.config.JWTAuthenticationFilter@7ca1e0f3, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@262a5395, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@184cec30, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@499e1a05, org.springframework.security.web.session.SessionManagementFilter@3e65a5fb, org.springframework.security.web.access.ExceptionTranslationFilter@4782a0b6, org.springframework.security.web.access.intercept.AuthorizationFilter@a254b61]
+2023-09-27 12:43:43.925  INFO 10596 --- [restartedMain] com.osttra.config.WebConfig              : CORS mappings configured.
+2023-09-27 12:43:43.989  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:43:44.010  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:43:44.015  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 0.456 seconds (JVM running for 10288.858)
+2023-09-27 12:43:44.016  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2023-09-27 12:45:02.203  INFO 10596 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2023-09-27 12:45:02.225  INFO 10596 --- [Thread-256] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-09-27 12:45:02.227  WARN 10596 --- [Thread-256] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-ClusterId{value='6513d6271c0f3a27e780d2dd', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/sun.nio.ch.Net.poll(Native Method)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:285)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+ java.base@17.0.7/java.net.Socket$SocketInputStream.read(Socket.java:966)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:110)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:135)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:713)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveMessageWithAdditionalTimeout(InternalStreamConnection.java:571)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:410)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:369)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:221)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:157)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:45:02.228  WARN 10596 --- [Thread-256] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-rtt-ClusterId{value='6513d6271c0f3a27e780d2dd', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/java.lang.Thread.sleep(Native Method)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.waitForNext(DefaultServerMonitor.java:443)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.access$1500(DefaultServerMonitor.java:64)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$RoundTripTimeRunnable.run(DefaultServerMonitor.java:415)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:45:02.230  WARN 10596 --- [Thread-256] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [MaintenanceTimer-64-thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.7/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.7/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:45:02.354  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:45:02.354  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:45:02.537  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:45:02.553  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:45:02.612  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:45:02.613  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:45:02.613  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:45:02.629  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:45:02.629  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 274 ms
+2023-09-27 12:45:02.661  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@a120f81], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@1aa8a002], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:45:02.666  INFO 10596 --- [cluster-ClusterId{value='6513d6761c0f3a27e780d2de', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:140, serverValue:884}] to localhost:27017
+2023-09-27 12:45:02.666  INFO 10596 --- [cluster-ClusterId{value='6513d6761c0f3a27e780d2de', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=3970800}
+2023-09-27 12:45:02.666  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d6761c0f3a27e780d2de', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:141, serverValue:885}] to localhost:27017
+2023-09-27 12:45:02.704  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:45:02.713  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Authentication provider initialized.
+2023-09-27 12:45:02.720  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:45:02.753  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Security filter chain configured.
+2023-09-27 12:45:02.756  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1f91dc70, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@75e2810a, org.springframework.security.web.context.SecurityContextPersistenceFilter@2453b2f0, org.springframework.security.web.header.HeaderWriterFilter@375c5126, org.springframework.security.web.authentication.logout.LogoutFilter@73e32f5f, com.osttra.config.JWTAuthenticationFilter@686e0463, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@245539ec, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@71d58921, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2c5bad62, org.springframework.security.web.session.SessionManagementFilter@464fa7f2, org.springframework.security.web.access.ExceptionTranslationFilter@538a618f, org.springframework.security.web.access.intercept.AuthorizationFilter@23b5e0e8]
+2023-09-27 12:45:02.760  INFO 10596 --- [restartedMain] com.osttra.config.WebConfig              : CORS mappings configured.
+2023-09-27 12:45:02.852  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:45:02.869  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:45:02.873  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 0.538 seconds (JVM running for 10367.709)
+2023-09-27 12:45:02.874  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2023-09-27 12:45:51.140  INFO 10596 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-09-27 12:45:51.140  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-09-27 12:45:51.142  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2023-09-27 12:45:51.142  INFO 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:45:51.143  INFO 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:45:51.231  INFO 10596 --- [http-nio-8080-exec-2] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:142, serverValue:886}] to localhost:27017
+2023-09-27 12:46:37.640  INFO 10596 --- [http-nio-8080-exec-3] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:46:37.641  INFO 10596 --- [http-nio-8080-exec-3] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:47:51.658  INFO 10596 --- [http-nio-8080-exec-6] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:47:51.671 ERROR 10596 --- [http-nio-8080-exec-6] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+
+io.jsonwebtoken.security.SignatureException: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:399) ~[jjwt-impl-0.11.5.jar:0.11.5]
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:529) ~[jjwt-impl-0.11.5.jar:0.11.5]
+	at io.jsonwebtoken.impl.DefaultJwtParser.parseClaimsJws(DefaultJwtParser.java:589) ~[jjwt-impl-0.11.5.jar:0.11.5]
+	at com.osttra.helper.JWTHelper.extractAllClaims(JWTHelper.java:35) ~[classes/:na]
+	at com.osttra.helper.JWTHelper.extractClaim(JWTHelper.java:31) ~[classes/:na]
+	at com.osttra.helper.JWTHelper.extractUsername(JWTHelper.java:23) ~[classes/:na]
+	at com.osttra.config.JWTAuthenticationFilter.doFilterInternal(JWTAuthenticationFilter.java:48) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186) ~[spring-security-web-5.7.6.jar:5.7.6]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96) ~[spring-boot-actuator-2.7.7.jar:2.7.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.24.jar:5.3.24]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:177) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:891) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1784) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.70.jar:9.0.70]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+
+2023-09-27 12:48:02.296  INFO 10596 --- [http-nio-8080-exec-8] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:48:02.298  INFO 10596 --- [http-nio-8080-exec-8] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:48:20.678  INFO 10596 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2023-09-27 12:48:20.705  INFO 10596 --- [Thread-260] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-09-27 12:48:20.705  INFO 10596 --- [Thread-260] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Destroying Spring FrameworkServlet 'dispatcherServlet'
+2023-09-27 12:48:20.707  WARN 10596 --- [Thread-260] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-ClusterId{value='6513d6761c0f3a27e780d2de', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/sun.nio.ch.Net.poll(Native Method)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:285)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+ java.base@17.0.7/java.net.Socket$SocketInputStream.read(Socket.java:966)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:110)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:135)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:713)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveMessageWithAdditionalTimeout(InternalStreamConnection.java:571)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:410)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:369)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:221)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:157)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:48:20.708  WARN 10596 --- [Thread-260] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-rtt-ClusterId{value='6513d6761c0f3a27e780d2de', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/java.lang.Thread.sleep(Native Method)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.waitForNext(DefaultServerMonitor.java:443)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.access$1500(DefaultServerMonitor.java:64)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$RoundTripTimeRunnable.run(DefaultServerMonitor.java:415)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:48:20.711  WARN 10596 --- [Thread-260] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [MaintenanceTimer-65-thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.7/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.7/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:48:20.820  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:48:20.820  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:48:21.236  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:48:21.284  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 46 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:48:21.451  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:48:21.452  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:48:21.452  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:48:21.520  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:48:21.520  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 699 ms
+2023-09-27 12:48:21.620  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@5f086da5], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@759b2c56], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:48:21.625  INFO 10596 --- [cluster-ClusterId{value='6513d73d1c0f3a27e780d2df', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:143, serverValue:887}] to localhost:27017
+2023-09-27 12:48:21.626  INFO 10596 --- [cluster-ClusterId{value='6513d73d1c0f3a27e780d2df', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=2352500}
+2023-09-27 12:48:21.627  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d73d1c0f3a27e780d2df', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:144, serverValue:888}] to localhost:27017
+2023-09-27 12:48:21.747  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:48:21.771  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Authentication provider initialized.
+2023-09-27 12:48:21.787  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:48:21.826  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Security filter chain configured.
+2023-09-27 12:48:21.843  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@ced4bf8, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4080e720, org.springframework.security.web.context.SecurityContextPersistenceFilter@1f2dfd0c, org.springframework.security.web.header.HeaderWriterFilter@581d286b, org.springframework.security.web.authentication.logout.LogoutFilter@5203d459, com.osttra.config.JWTAuthenticationFilter@52212487, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5d2a596b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6cc57cd5, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@74aac7f5, org.springframework.security.web.session.SessionManagementFilter@255d6c17, org.springframework.security.web.access.ExceptionTranslationFilter@5552f2f0, org.springframework.security.web.access.intercept.AuthorizationFilter@1a09c2cf]
+2023-09-27 12:48:21.861  INFO 10596 --- [restartedMain] com.osttra.config.WebConfig              : CORS mappings configured.
+2023-09-27 12:48:22.159  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:48:22.216  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:48:22.232  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 1.429 seconds (JVM running for 10567.063)
+2023-09-27 12:48:22.237  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2023-09-27 12:48:25.134  INFO 10596 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-09-27 12:48:25.136  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-09-27 12:48:25.138  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-09-27 12:48:25.140  INFO 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:48:25.158  INFO 10596 --- [http-nio-8080-exec-2] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:145, serverValue:889}] to localhost:27017
+2023-09-27 12:48:25.172  INFO 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:48:25.181  WARN 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Authentication failed for token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXQiLCJpYXQiOjE2OTU3OTc4MjcsImV4cCI6MTY5NTgzMzgyN30.QarfiLYI19CzvWMRl1ARC7R3RS47Xvss8CwMc9gAdjY
+2023-09-27 12:48:54.323  INFO 10596 --- [http-nio-8080-exec-3] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:48:54.324  INFO 10596 --- [http-nio-8080-exec-3] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:49:03.071  INFO 10596 --- [http-nio-8080-exec-4] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:49:03.072 ERROR 10596 --- [http-nio-8080-exec-4] com.osttra.helper.AuthEntryPointJwt      : Unauthorized error: Full authentication is required to access this resource
+2023-09-27 12:50:10.682  INFO 10596 --- [http-nio-8080-exec-7] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:50:10.692  INFO 10596 --- [http-nio-8080-exec-7] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:50:10.702  WARN 10596 --- [http-nio-8080-exec-7] c.osttra.config.JWTAuthenticationFilter  : Authentication failed for token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXQiLCJpYXQiOjE2OTU3OTkxMzQsImV4cCI6MTY5NTgzNTEzNH0.H5wsqps097TyQOrKYeT4iLRNm2bwTnbL6btP8T4Xq-s
+2023-09-27 12:50:26.729  INFO 10596 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2023-09-27 12:50:26.751  INFO 10596 --- [Thread-264] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-09-27 12:50:26.751  INFO 10596 --- [Thread-264] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Destroying Spring FrameworkServlet 'dispatcherServlet'
+2023-09-27 12:50:26.755  WARN 10596 --- [Thread-264] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-ClusterId{value='6513d73d1c0f3a27e780d2df', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/sun.nio.ch.Net.poll(Native Method)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:285)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+ java.base@17.0.7/java.net.Socket$SocketInputStream.read(Socket.java:966)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:110)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:135)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:713)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveMessageWithAdditionalTimeout(InternalStreamConnection.java:571)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:410)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:369)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:221)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:157)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:50:26.756  WARN 10596 --- [Thread-264] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-rtt-ClusterId{value='6513d73d1c0f3a27e780d2df', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/java.lang.Thread.sleep(Native Method)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.waitForNext(DefaultServerMonitor.java:443)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.access$1500(DefaultServerMonitor.java:64)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$RoundTripTimeRunnable.run(DefaultServerMonitor.java:415)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:50:26.758  WARN 10596 --- [Thread-264] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [MaintenanceTimer-66-thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.7/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.7/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:50:26.893  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:50:26.893  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:50:27.060  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:50:27.075  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:50:27.198  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:50:27.199  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:50:27.199  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:50:27.262  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:50:27.262  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 368 ms
+2023-09-27 12:50:27.350  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@7d32bf7d], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@71cf7436], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:50:27.356  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d7bb1c0f3a27e780d2e0', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:147, serverValue:890}] to localhost:27017
+2023-09-27 12:50:27.358  INFO 10596 --- [cluster-ClusterId{value='6513d7bb1c0f3a27e780d2e0', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:146, serverValue:891}] to localhost:27017
+2023-09-27 12:50:27.359  INFO 10596 --- [cluster-ClusterId{value='6513d7bb1c0f3a27e780d2e0', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=4645400}
+2023-09-27 12:50:27.460  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:50:27.488  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Authentication provider initialized.
+2023-09-27 12:50:27.503  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:50:27.544  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Security filter chain configured.
+2023-09-27 12:50:27.552  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@788858a6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3ef44c9d, org.springframework.security.web.context.SecurityContextPersistenceFilter@40551b43, org.springframework.security.web.header.HeaderWriterFilter@5388dd8e, org.springframework.security.web.authentication.logout.LogoutFilter@7176f98b, com.osttra.config.JWTAuthenticationFilter@26ad2bad, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@693cfb22, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7c4d2f26, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2e3294b6, org.springframework.security.web.session.SessionManagementFilter@64803729, org.springframework.security.web.access.ExceptionTranslationFilter@184620d3, org.springframework.security.web.access.intercept.AuthorizationFilter@6a3cdda6]
+2023-09-27 12:50:27.566  INFO 10596 --- [restartedMain] com.osttra.config.WebConfig              : CORS mappings configured.
+2023-09-27 12:50:27.756  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:50:27.801  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:50:27.811  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 0.936 seconds (JVM running for 10692.643)
+2023-09-27 12:50:27.816  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2023-09-27 12:50:29.080  INFO 10596 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-09-27 12:50:29.081  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-09-27 12:50:29.083  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-09-27 12:50:29.084  INFO 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:50:29.100  INFO 10596 --- [http-nio-8080-exec-2] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:148, serverValue:892}] to localhost:27017
+2023-09-27 12:50:29.121  INFO 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:50:29.128  WARN 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Authentication failed for token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXQiLCJpYXQiOjE2OTU3OTkxMzQsImV4cCI6MTY5NTgzNTEzNH0.H5wsqps097TyQOrKYeT4iLRNm2bwTnbL6btP8T4Xq-s
+2023-09-27 12:50:36.482  INFO 10596 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2023-09-27 12:50:36.506  INFO 10596 --- [Thread-268] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-09-27 12:50:36.506  INFO 10596 --- [Thread-268] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Destroying Spring FrameworkServlet 'dispatcherServlet'
+2023-09-27 12:50:36.510  WARN 10596 --- [Thread-268] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-ClusterId{value='6513d7bb1c0f3a27e780d2e0', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/sun.nio.ch.Net.poll(Native Method)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:285)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:309)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+ java.base@17.0.7/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+ java.base@17.0.7/java.net.Socket$SocketInputStream.read(Socket.java:966)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:110)
+ app//com.mongodb.internal.connection.SocketStream.read(SocketStream.java:135)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:713)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveMessageWithAdditionalTimeout(InternalStreamConnection.java:571)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:410)
+ app//com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:369)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:221)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:157)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:50:36.512  WARN 10596 --- [Thread-268] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [cluster-rtt-ClusterId{value='6513d7bb1c0f3a27e780d2e0', description='null'}-localhost:27017] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/java.lang.Thread.sleep(Native Method)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.waitForNext(DefaultServerMonitor.java:443)
+ app//com.mongodb.internal.connection.DefaultServerMonitor.access$1500(DefaultServerMonitor.java:64)
+ app//com.mongodb.internal.connection.DefaultServerMonitor$RoundTripTimeRunnable.run(DefaultServerMonitor.java:415)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:50:36.513  WARN 10596 --- [Thread-268] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [MaintenanceTimer-67-thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.7/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.7/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.7/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.7/java.lang.Thread.run(Thread.java:833)
+2023-09-27 12:50:36.642  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Starting ManytomanyApplication using Java 17.0.7 on II03-PF40G7B8 with PID 10596 (C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert\target\classes started by rishika.singh in C:\Users\rishika.singh\Documents\Tema-Backend\UserManagement-FinalBackend\mongo convert)
+2023-09-27 12:50:36.642  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : No active profile set, falling back to 1 default profile: "default"
+2023-09-27 12:50:37.264  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-27 12:50:37.323  INFO 10596 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 58 ms. Found 2 MongoDB repository interfaces.
+2023-09-27 12:50:37.500  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-27 12:50:37.501  INFO 10596 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-27 12:50:37.501  INFO 10596 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-09-27 12:50:37.585  INFO 10596 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2023-09-27 12:50:37.586  INFO 10596 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 942 ms
+2023-09-27 12:50:37.679  INFO 10596 --- [restartedMain] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 10", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/17.0.7+7"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@7bc04292], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@261e29a2]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@43563fee], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2023-09-27 12:50:37.686  INFO 10596 --- [cluster-ClusterId{value='6513d7c51c0f3a27e780d2e1', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:149, serverValue:893}] to localhost:27017
+2023-09-27 12:50:37.686  INFO 10596 --- [cluster-ClusterId{value='6513d7c51c0f3a27e780d2e1', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=4439000}
+2023-09-27 12:50:37.688  INFO 10596 --- [cluster-rtt-ClusterId{value='6513d7c51c0f3a27e780d2e1', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:150, serverValue:894}] to localhost:27017
+2023-09-27 12:50:37.790  INFO 10596 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-09-27 12:50:37.815  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Authentication provider initialized.
+2023-09-27 12:50:37.830  INFO 10596 --- [restartedMain] c.o.config.CustomResponseErrorHandler    : Creating RestTemplate bean
+2023-09-27 12:50:37.873  INFO 10596 --- [restartedMain] com.osttra.config.SecurityConfig         : Security filter chain configured.
+2023-09-27 12:50:37.886  INFO 10596 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@517226c4, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@52052588, org.springframework.security.web.context.SecurityContextPersistenceFilter@304aaee4, org.springframework.security.web.header.HeaderWriterFilter@3b7a8742, org.springframework.security.web.authentication.logout.LogoutFilter@63dc150f, com.osttra.config.JWTAuthenticationFilter@3b6b4633, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3cd056ed, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@537f96a2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@25f25707, org.springframework.security.web.session.SessionManagementFilter@3a0de47c, org.springframework.security.web.access.ExceptionTranslationFilter@151a8e8, org.springframework.security.web.access.intercept.AuthorizationFilter@72e00733]
+2023-09-27 12:50:37.897  INFO 10596 --- [restartedMain] com.osttra.config.WebConfig              : CORS mappings configured.
+2023-09-27 12:50:38.127  INFO 10596 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2023-09-27 12:50:38.185  INFO 10596 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-27 12:50:38.197  INFO 10596 --- [restartedMain] com.osttra.ManytomanyApplication         : Started ManytomanyApplication in 1.575 seconds (JVM running for 10703.029)
+2023-09-27 12:50:38.200  INFO 10596 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2023-09-27 12:50:38.297  INFO 10596 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-09-27 12:50:38.298  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-09-27 12:50:38.300  INFO 10596 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-09-27 12:50:38.301  INFO 10596 --- [http-nio-8080-exec-2] c.osttra.config.JWTAuthenticationFilter  : Inside JWTAuthenticationFilter...
+2023-09-27 12:50:38.317  INFO 10596 --- [http-nio-8080-exec-2] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:151, serverValue:895}] to localhost:27017
+2023-09-27 12:50:38.335  WARN 10596 --- [http-nio-8080-exec-2] com.osttra.config.SecurityConfig         : Access denied: Access Denied
