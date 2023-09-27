@@ -16,8 +16,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JWTHelper {
 	
 
-    private String SECRET_KEY = "ThisIsASecretKeyForJWTAuthenticationhhhhhhhhhtdytcytcycyccytctcyccccccccccccccccttttttttrrrrrrrrrrrrrrrrr";
+    //private String SECRET_KEY = "ThisIsASecretKeyForJWTAuthenticationhhhhhhhhhtdytcytcycyccytctcyccccccccccccccccttttttttrrrrrrrrrrrrrrrrr";
 
+	private String SECRET_KEY="gJ73nQqT1Ziw7EGFlG6K7hR9a0P4D0M4lC6L3J8J1A4nX0H3eN6K6Q3qT4iW";
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }

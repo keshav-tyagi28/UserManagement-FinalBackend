@@ -43,8 +43,8 @@ import com.osttra.repository.UserRepository;
 
 import com.osttra.service.CustomUserDetailsService;
 
-import com.osttra.service.UserDetailService;
-import com.osttra.service.UserGroupDetailsService;
+import com.osttra.service.UserDetailServiceImpl;
+import com.osttra.service.UserGroupDetailsServiceImpl;
 import com.osttra.to.CustomResponse;
 import com.osttra.to.JWTRequest;
 
@@ -58,7 +58,7 @@ public class UserController {
 
 	
 	@Autowired
-	UserDetailService userDetailsService;
+	UserDetailServiceImpl userDetailsService;
 	
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -76,7 +76,7 @@ public class UserController {
 	
 
 	@Autowired
-	UserGroupDetailsService userGroupDetailsService;
+	UserGroupDetailsServiceImpl userGroupDetailsService;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -90,6 +90,8 @@ public class UserController {
 	 
 	 @Autowired
 	    private CustomResponseErrorHandler customResponseErrorHandler;
+	 
+	 private String ip="10.196.22.55:8080";
 
 
 	
@@ -124,9 +126,9 @@ public class UserController {
 
 	        
 	         	String jsonPayload = jsonObject.toString();
-	    	  String externalApiUrl="http://10.196.22.55:8080/engine-rest/user/create";
+	    	  String externalApiUrl="http://"+ ip +"/engine-rest/user/create";
 	    	  
-//	    	  ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl, HttpMethod.POST, jsonPayload);
+   	 // ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl, HttpMethod.POST, jsonPayload);
 
 
 				String password = user.getPassword();
@@ -235,7 +237,7 @@ public class UserController {
 		     
 		        userDetailsService.saveUser(existingUser);
 
-		        String externalApiUrl = "http://10.196.22.55:8080/engine-rest/user/" + username + "/profile";
+		        String externalApiUrl = "http://" + ip + "/engine-rest/user/" + username + "/profile";
 		        String jsonPayload = jsonObject.toString();
 
 		        ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl, HttpMethod.PUT, jsonPayload);
@@ -371,7 +373,7 @@ public class UserController {
 
 				userDetailsService.deleteUser(username);
 
-				String externalApiUrl = "http://10.196.22.55:8080/engine-rest/user/" + username;
+				String externalApiUrl = "http://" + ip + "/engine-rest/user/" + username;
 
 				ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl,
 						HttpMethod.DELETE, null);
@@ -393,6 +395,50 @@ public class UserController {
 				return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
+		
+		
+		
+		@GetMapping("/history/{username}")
+		public void getUserHistory(@PathVariable String username)
+		{
+			String externalApiUrl = "http://" + ip +"/engine-rest/history/user-operation?userId=" + username + "&operationType=Claim";
+			
+			 try {
+		            // Initialize the RestTemplate
+		            RestTemplate restTemplate = new RestTemplate();
+
+		            // Make a GET request to the external API and get the JSON response
+		            String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
+
+		            // Initialize the ObjectMapper
+		            ObjectMapper objectMapper = new ObjectMapper();
+
+		            // Parse the JSON response
+		            JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+		            
+
+		            // Traverse the array and extract rootProcessInstanceId
+		            for (JsonNode node : jsonNode) {
+		                String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
+		                System.out.println("rootProcessInstanceId: " + rootProcessInstanceId);
+		            }
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 	
 

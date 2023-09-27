@@ -35,8 +35,8 @@ import com.osttra.entity.User;
 import com.osttra.entity.UserGroup;
 
 
-import com.osttra.service.UserDetailService;
-import com.osttra.service.UserGroupDetailsService;
+import com.osttra.service.UserDetailServiceImpl;
+import com.osttra.service.UserGroupDetailsServiceImpl;
 
 import com.osttra.to.CustomResponse;
 
@@ -50,10 +50,10 @@ public class UserGroupController {
 	
 
 	@Autowired
-	UserGroupDetailsService usergroupdetailservice;
+	UserGroupDetailsServiceImpl usergroupdetailservice;
 	
 	@Autowired
-	UserDetailService userdetailservice;
+	UserDetailServiceImpl userdetailservice;
 	
 	 @Autowired
 	private RestTemplate restTemplate;
@@ -304,7 +304,7 @@ public class UserGroupController {
 	    @PostMapping("/addusers/{groupId}")
 	    public ResponseEntity<Object> addmultiple(@RequestBody Map<String, String[]> requestBody, @PathVariable String groupId, HttpServletRequest request) {
 	       
-	    	 String[] userIds = requestBody.get("userIds");
+	    	 String[] userIds = requestBody.get("username");
 	    	 
 	        for (String userId : userIds) {
 	        	User user = userdetailservice.getUserById(userId);

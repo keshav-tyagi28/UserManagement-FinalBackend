@@ -126,7 +126,7 @@ public class SecurityConfig {
           auth.antMatchers("/api/auth/**").permitAll()
               .antMatchers("/api/test/**").permitAll()
               .antMatchers("/signin").permitAll()
-              .antMatchers("/users/**").permitAll()
+              .antMatchers("/users/**").hasRole("ADMIN")
               .antMatchers("/usergroups/**").permitAll()
               .antMatchers("/all").hasRole("CUSTOMER")      
               .anyRequest().authenticated()
