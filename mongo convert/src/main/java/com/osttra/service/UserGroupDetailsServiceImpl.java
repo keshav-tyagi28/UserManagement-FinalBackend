@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.osttra.entity.UserGroup;
-import com.osttra.repository.UserGroupRepository;
+import com.osttra.repository.temaDatabase.UserGroupRepository;
 
 @Service
 public class UserGroupDetailsServiceImpl implements UserGroupDetailsService {

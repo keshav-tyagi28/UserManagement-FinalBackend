@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.osttra.helper.JwtUtils;
-import com.osttra.repository.UserRepository;
+import com.osttra.repository.temaDatabase.UserRepository;
 import com.osttra.to.CustomUserDetails;
 import com.osttra.to.JWTRequest;
 import com.osttra.to.JWTResponse;

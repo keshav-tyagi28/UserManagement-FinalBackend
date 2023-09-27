@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.osttra.entity.User;
-import com.osttra.repository.UserRepository;
+import com.osttra.repository.temaDatabase.UserRepository;
 import com.osttra.to.CustomUserDetails;
 
 @Service
