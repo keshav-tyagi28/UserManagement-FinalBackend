@@ -3,9 +3,13 @@ package com.osttra.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.osttra.entity.User;
 import com.osttra.entity.UserGroup;
 import com.osttra.repository.temaDatabase.UserGroupRepository;
 
@@ -34,4 +38,10 @@ public class UserGroupDetailsServiceImpl implements UserGroupDetailsService {
 	public void deleteUserGroup(String userGroupId) {
 		userGroupRepository.deleteById(userGroupId);
 	}
+	
+	@Override
+	public Page<UserGroup> getAllUserGroupsWithPaging(int pageNumber) {
+        Pageable paging = PageRequest.of(pageNumber - 1, 5);
+        return userGroupRepository.findAll(paging);
+    }
 }
