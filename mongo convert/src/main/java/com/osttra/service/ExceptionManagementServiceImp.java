@@ -65,7 +65,17 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 //		return temaMongoRepository.findAll();
 //	}
 
- 
+	public String fetchExceptionIdByProcessId(String processId) {
+	    Optional<TemaExceptionEntity> exceptionEntityOptional = temaExceptionRepository.findExceptionByProcessId(processId);
+
+	    if (exceptionEntityOptional.isPresent()) {
+	        TemaExceptionEntity exceptionEntity = exceptionEntityOptional.get();
+	        String exceptionId = exceptionEntity.getExceptionId();
+	        return exceptionId;
+	    } 
+	        return "";
+	    
+	}
 
 	public SourceExceptionEntity addExceptionInSource(SourceExceptionEntity sourceData) {
 		return sourceExceptionRepository.save(sourceData);

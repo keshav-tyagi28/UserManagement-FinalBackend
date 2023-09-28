@@ -1,5 +1,6 @@
 package com.osttra.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +42,7 @@ import com.osttra.helper.JWTHelper;
 import com.osttra.repository.temaDatabase.UserGroupRepository;
 import com.osttra.repository.temaDatabase.UserRepository;
 import com.osttra.service.CustomUserDetailsService;
-
+import com.osttra.service.ExceptionManagementServiceImp;
 import com.osttra.service.UserDetailServiceImpl;
 import com.osttra.service.UserGroupDetailsServiceImpl;
 import com.osttra.to.CustomResponse;
@@ -86,6 +87,9 @@ public class UserController {
 	 @Autowired
 	private RestTemplate restTemplate;
 	 
+	 @Autowired
+	 ExceptionManagementServiceImp exceptionManagementServiceImp;
+	 
 	 
 	 @Autowired
 	    private CustomResponseErrorHandler customResponseErrorHandler;
@@ -127,7 +131,7 @@ public class UserController {
 	         	String jsonPayload = jsonObject.toString();
 	    	  String externalApiUrl="http://"+ ip +"/engine-rest/user/create";
 	    	  
-   	 // ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl, HttpMethod.POST, jsonPayload);
+   	  ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl, HttpMethod.POST, jsonPayload);
 
 
 				String password = user.getPassword();
@@ -397,8 +401,8 @@ public class UserController {
 		
 		
 		
-		@GetMapping("/history/{username}")
-		public void getUserHistory(@PathVariable String username)
+		@GetMapping("/claim/history/{username}")
+		public ResponseEntity<?> getUserHistory(@PathVariable String username, HttpServletRequest request)
 		{
 			String externalApiUrl = "http://" + ip +"/engine-rest/history/user-operation?userId=" + username + "&operationType=Claim";
 			
@@ -417,20 +421,75 @@ public class UserController {
 		            
 
 		            // Traverse the array and extract rootProcessInstanceId
+		            List<String> exceptionIds= new ArrayList<String>();
 		            for (JsonNode node : jsonNode) {
-		                String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
-		                System.out.println("rootProcessInstanceId: " + rootProcessInstanceId);
+	                String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
+		              String id= exceptionManagementServiceImp.fetchExceptionIdByProcessId(rootProcessInstanceId);
+		              if(id!="")
+		              {
+		            	  exceptionIds.add(id);
+		              }
 		            }
-		        } catch (Exception e) {
-		            e.printStackTrace();
-		        }
+
+		            CustomResponse<List<String>> successResponse = new CustomResponse<>(exceptionIds, "exception id's ", HttpStatus.OK.value(), request.getRequestURI());
+
+					return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+			 
+			 } catch (Exception e) {
+		           
+		        
+				 CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
+							HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
+					return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+			 }
+			
+			 
 		}
 		
 		
 		
-		
-		
-		
+		@GetMapping("/complete/history/{username}")
+		public ResponseEntity<?> getUserHistoryComplete(@PathVariable String username, HttpServletRequest request)
+		{
+			String externalApiUrl = "http://" + ip +"/engine-rest/history/user-operation?userId=" + username + "&operationType=Complete";
+			
+			 try {
+		            // Initialize the RestTemplate
+		            RestTemplate restTemplate = new RestTemplate();
+
+		            String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
+
+		            ObjectMapper objectMapper = new ObjectMapper();
+
+		            JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+		            
+		            List<String> exceptionIds= new ArrayList<String>();
+		            for (JsonNode node : jsonNode) {
+	                String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
+		              String id= exceptionManagementServiceImp.fetchExceptionIdByProcessId(rootProcessInstanceId);
+		              if(id!="")
+		              {
+		            	  exceptionIds.add(id);
+		              }
+		            }
+
+		            CustomResponse<List<String>> successResponse = new CustomResponse<>(exceptionIds, "exception id's ", HttpStatus.OK.value(), request.getRequestURI());
+
+					return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+			 
+			 } catch (Exception e) {
+		           
+		        
+				 CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
+							HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
+					return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+			 }
+			
+			 
+		}
+
 		
 		
 		

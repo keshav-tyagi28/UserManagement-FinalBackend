@@ -271,6 +271,12 @@ public class UserGroupController {
 				}
 
 				Set<String> userList = userGroup.getUserId();
+				
+				if(userList.size()==0)
+				{
+					CustomResponse<String> errorResponse = new CustomResponse<>("", "No users present in this group", HttpStatus.NO_CONTENT.value(), request.getServletPath());
+		            return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
+				}
 				Set<User> users = new HashSet<User> (); 
 				
 				for (String temp : userList) {
@@ -280,7 +286,7 @@ public class UserGroupController {
 					
 				}
 				
-				CustomResponse<Set<User>> successResponse = new CustomResponse<>(users, "User groups displayed succesfully", HttpStatus.OK.value(), request.getServletPath());
+				CustomResponse<Set<User>> successResponse = new CustomResponse<>(users, " Group Users  displayed succesfully", HttpStatus.OK.value(), request.getServletPath());
 		        return new ResponseEntity<>(successResponse, HttpStatus.OK);
 				
 			} catch (IllegalArgumentException e) {

@@ -12,6 +12,8 @@ package com.osttra.service;
 	public interface ExceptionManagementService {
 
 	    List<SourceExceptionEntity> getAllFromSource();
+	    
+	    public String fetchExceptionIdByProcessId(String processId);
 
 	    void deleteAllItemsSource();
 
