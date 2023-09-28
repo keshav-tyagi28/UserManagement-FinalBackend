@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -33,12 +35,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.osttra.entity.User;
 import com.osttra.entity.UserGroup;
-
-
+import com.osttra.repository.temaDatabase.UserRepository;
+import com.osttra.service.UserDetailService;
 import com.osttra.service.UserDetailServiceImpl;
+import com.osttra.service.UserGroupDetailsService;
 import com.osttra.service.UserGroupDetailsServiceImpl;
 
 import com.osttra.to.CustomResponse;
+import com.osttra.to.CustomResponseWithTotalRecords;
 
 
 @RestController
@@ -50,10 +54,13 @@ public class UserGroupController {
 	
 
 	@Autowired
-	UserGroupDetailsServiceImpl usergroupdetailservice;
+	UserGroupDetailsService usergroupdetailservice;
 	
 	@Autowired
-	UserDetailServiceImpl userdetailservice;
+	UserDetailService userdetailservice;
+	
+	@Autowired
+	UserRepository userRepository;
 	
 	 @Autowired
 	private RestTemplate restTemplate;
@@ -96,14 +103,14 @@ public class UserGroupController {
 		
 	@GetMapping(value = "/allgroups", produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<?> getAllUserGroups(HttpServletRequest request) {
+	public ResponseEntity<?> getAllUserGroups(@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request) {
 		try {
-
-			List<UserGroup> usergroups = usergroupdetailservice.getAllUserGroups();
-
-			CustomResponse<List<UserGroup>> successResponse = new CustomResponse<>(usergroups, "Listed all user groups",
-					HttpStatus.OK.value(), request.getServletPath());
-			return new ResponseEntity<>(successResponse, HttpStatus.OK);
+			
+			Page<UserGroup> page = usergroupdetailservice.getAllUserGroupsWithPaging(pageNumber);
+			long totalRecords = userRepository.count();	
+			
+			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(page.getContent(), "Listed all user groups", HttpStatus.OK.value(), request.getServletPath(), totalRecords);
+            return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
 

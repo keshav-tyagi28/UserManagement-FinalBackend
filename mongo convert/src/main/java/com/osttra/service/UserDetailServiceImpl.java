@@ -1,11 +1,16 @@
 package com.osttra.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -81,10 +86,23 @@ public class UserDetailServiceImpl implements UserDetailService{
 	{
 		User user= userRepository.findById(username).orElse(null);
 			userRepository.delete(user);
-		
-		
-		
-		
+
 	}
+
 	
+	@Override
+	public Page<User> search(String search, Pageable pageable) {
+        return userRepository.searchUsers(search, pageable);
+    }
+
+
+
+
+	@Override
+	public Page<User> getAllUsers(int pageNumber) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+        return userRepository.findAll(pageable);
+	}
+
+
 }
