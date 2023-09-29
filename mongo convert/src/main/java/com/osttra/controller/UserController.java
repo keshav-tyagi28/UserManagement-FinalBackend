@@ -164,28 +164,43 @@ public class UserController {
 
 	@GetMapping(value = "/allusers", produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<?> getAllUsers(@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request) {
+	public ResponseEntity<?> getAllUsers(@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request,
+			@RequestParam(defaultValue = "5") int pageSize) {
+
 		try {
 
-			Page<User> page = userDetailsService.getAllUsers(pageNumber);
-	        List<User> pageContent = page.getContent();
-	        int totalRecords = (int) page.getTotalElements();
+			Page<User> page = userDetailsService.getAllUsers(pageNumber, pageSize);
+
+			List<User> pageContent = page.getContent();
+
+			int totalRecords = (int) page.getTotalElements();
 
 			CustomResponseWithTotalRecords<List<User>> successResponse = new CustomResponseWithTotalRecords<>(
+
 					pageContent, "Listed all users", HttpStatus.OK.value(), request.getServletPath(),
+
 					totalRecords);
+
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+
 			CustomResponse<List<User>> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
+
 					HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
 		} catch (Exception e) {
+
 			CustomResponse<List<User>> errorResponse = new CustomResponse<>(null, "Internal Server Error",
+
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+
 		}
+
 	}
 
 	// update a user using username
@@ -374,86 +389,6 @@ public class UserController {
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	@GetMapping("/claim/history/{username}")
-	public ResponseEntity<?> getUserHistory(@PathVariable String username, HttpServletRequest request) {
-		String externalApiUrl = "http://" + ip + "/engine-rest/history/user-operation?userId=" + username
-				+ "&operationType=Claim";
-
-		try {
-			// Initialize the RestTemplate
-			RestTemplate restTemplate = new RestTemplate();
-
-			// Make a GET request to the external API and get the JSON response
-			String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
-
-			// Initialize the ObjectMapper
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			// Parse the JSON response
-			JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-
-			// Traverse the array and extract rootProcessInstanceId
-			List<String> exceptionIds = new ArrayList<String>();
-			for (JsonNode node : jsonNode) {
-				String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
-				String id = exceptionManagementServiceImp.fetchExceptionIdByProcessId(rootProcessInstanceId);
-				if (id != "") {
-					exceptionIds.add(id);
-				}
-			}
-
-			CustomResponse<List<String>> successResponse = new CustomResponse<>(exceptionIds, "exception id's ",
-					HttpStatus.OK.value(), request.getRequestURI());
-
-			return new ResponseEntity<>(successResponse, HttpStatus.OK);
-
-		} catch (Exception e) {
-
-			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
-					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
-			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
-
-	@GetMapping("/complete/history/{username}")
-	public ResponseEntity<?> getUserHistoryComplete(@PathVariable String username, HttpServletRequest request) {
-		String externalApiUrl = "http://" + ip + "/engine-rest/history/user-operation?userId=" + username
-				+ "&operationType=Complete";
-
-		try {
-			// Initialize the RestTemplate
-			RestTemplate restTemplate = new RestTemplate();
-
-			String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
-
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-
-			List<String> exceptionIds = new ArrayList<String>();
-			for (JsonNode node : jsonNode) {
-				String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
-				String id = exceptionManagementServiceImp.fetchExceptionIdByProcessId(rootProcessInstanceId);
-				if (id != "") {
-					exceptionIds.add(id);
-				}
-			}
-
-			CustomResponse<List<String>> successResponse = new CustomResponse<>(exceptionIds, "exception id's ",
-					HttpStatus.OK.value(), request.getRequestURI());
-
-			return new ResponseEntity<>(successResponse, HttpStatus.OK);
-
-		} catch (Exception e) {
-
-			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
-					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
-			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
 	}
 
 	

@@ -27,6 +27,6 @@ public interface UserDetailService {
 
 	public Page<User> search(String search, Pageable pageable);
 
-	public Page<User> getAllUsers(int pageNumber);
+	public Page<User> getAllUsers(int pageNumber,int pageSize);
 
 }

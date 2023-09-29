@@ -99,8 +99,8 @@ public class UserDetailServiceImpl implements UserDetailService{
 
 
 	@Override
-	public Page<User> getAllUsers(int pageNumber) {
-		Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+	public Page<User> getAllUsers(int pageNumber, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return userRepository.findAll(pageable);
 	}
 

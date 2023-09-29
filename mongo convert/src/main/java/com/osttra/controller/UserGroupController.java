@@ -106,10 +106,10 @@ public class UserGroupController {
 		
 	@GetMapping(value = "/allgroups", produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<?> getAllUserGroups(@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request) {
+	public ResponseEntity<?> getAllUserGroups(@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request, @RequestParam(defaultValue = "1") int pageSize) {
 		try {
 			
-			Page<UserGroup> page = usergroupdetailservice.getAllUserGroupsWithPaging(pageNumber);
+			Page<UserGroup> page = usergroupdetailservice.getAllUserGroupsWithPaging(pageNumber,pageSize);
 			long totalRecords = (int) page.getTotalElements();
 			
 			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(page.getContent(), "Listed all user groups", HttpStatus.OK.value(), request.getServletPath(), totalRecords);
@@ -129,7 +129,58 @@ public class UserGroupController {
 
 		}
 	}
-		
+	
+	
+	
+	@GetMapping(value = "/allgroupnames", produces = "application/json")
+	@ResponseBody
+	public ResponseEntity<?> getUserGroups( HttpServletRequest request) {
+		try {
+			
+			List<UserGroup> usergroups= usergroupdetailservice.getAllUserGroups();
+			
+			CustomResponse<List<UserGroup>> successResponse = new CustomResponse<>(usergroups, "Listed all user groups", HttpStatus.OK.value(), request.getServletPath());
+            return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+		} catch (IllegalArgumentException e) {
+
+			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+		} catch (Exception e) {
+
+			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		
 	@PutMapping("/updategroup/{usergroupid}")
 	public ResponseEntity<?> updateUserGroup(@PathVariable String usergroupid, @RequestBody UserGroup updatedUserGroup,

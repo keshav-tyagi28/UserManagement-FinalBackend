@@ -20,5 +20,5 @@ public interface UserGroupDetailsService {
 	@Transactional
 	public void deleteUserGroup(String userGroupId);
 	
-	Page<UserGroup> getAllUserGroupsWithPaging(int pageNumber);
+	Page<UserGroup> getAllUserGroupsWithPaging(int pageNumber, int pageSize);
 }

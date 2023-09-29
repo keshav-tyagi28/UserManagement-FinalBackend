@@ -41,8 +41,8 @@ public class UserGroupDetailsServiceImpl implements UserGroupDetailsService {
 
 	
 	@Override
-	public Page<UserGroup> getAllUserGroupsWithPaging(int pageNumber) {
-        Pageable paging = PageRequest.of(pageNumber - 1, 5);
+	public Page<UserGroup> getAllUserGroupsWithPaging(int pageNumber, int pageSize) {
+        Pageable paging = PageRequest.of(pageNumber - 1, pageSize);
         return userGroupRepository.findAll(paging);
     }
 }

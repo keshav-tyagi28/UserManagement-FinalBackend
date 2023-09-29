@@ -130,6 +130,7 @@ public class SecurityConfig {
               .antMatchers("/signin").permitAll()
               .antMatchers("/users/**").permitAll()
               .antMatchers("/usergroups/**").permitAll()
+              .antMatchers("/history/**").permitAll()
               .antMatchers("/api/**").permitAll()
 
               .anyRequest().authenticated()
