@@ -38,6 +38,7 @@ public class UserGroupDetailsServiceImpl implements UserGroupDetailsService {
 	public void deleteUserGroup(String userGroupId) {
 		userGroupRepository.deleteById(userGroupId);
 	}
+
 	
 	@Override
 	public Page<UserGroup> getAllUserGroupsWithPaging(int pageNumber) {

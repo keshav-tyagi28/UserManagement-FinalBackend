@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.osttra.entity.User;
 import com.osttra.entity.UserGroup;
+import com.osttra.repository.temaDatabase.UserGroupRepository;
 import com.osttra.repository.temaDatabase.UserRepository;
 import com.osttra.service.UserDetailService;
 import com.osttra.service.UserDetailServiceImpl;
@@ -61,6 +62,8 @@ public class UserGroupController {
 	
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	UserGroupRepository userGroupRepository;
 	
 	 @Autowired
 	private RestTemplate restTemplate;
@@ -107,7 +110,7 @@ public class UserGroupController {
 		try {
 			
 			Page<UserGroup> page = usergroupdetailservice.getAllUserGroupsWithPaging(pageNumber);
-			long totalRecords = userRepository.count();	
+			long totalRecords = (int) page.getTotalElements();
 			
 			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(page.getContent(), "Listed all user groups", HttpStatus.OK.value(), request.getServletPath(), totalRecords);
             return new ResponseEntity<>(successResponse, HttpStatus.OK);
