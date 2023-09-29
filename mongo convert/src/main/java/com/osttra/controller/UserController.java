@@ -43,7 +43,7 @@ import com.osttra.helper.JWTHelper;
 import com.osttra.repository.temaDatabase.UserGroupRepository;
 import com.osttra.repository.temaDatabase.UserRepository;
 import com.osttra.service.CustomUserDetailsService;
-import com.osttra.service.ExceptionManagementServiceImp;
+
 import com.osttra.service.UserDetailService;
 import com.osttra.service.UserDetailServiceImpl;
 import com.osttra.service.UserGroupDetailsService;
@@ -92,8 +92,7 @@ public class UserController {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Autowired
-	ExceptionManagementServiceImp exceptionManagementServiceImp;
+	
 
 	@Autowired
 	private CustomResponseErrorHandler customResponseErrorHandler;
