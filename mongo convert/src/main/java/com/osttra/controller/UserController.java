@@ -129,8 +129,8 @@ public class UserController {
 			String jsonPayload = jsonObject.toString();
 			String externalApiUrl = "http://" + ip + "/engine-rest/user/create";
 
-			ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl,
-					HttpMethod.POST, jsonPayload);
+		//	ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl,
+			// HttpMethod.POST, jsonPayload);
 
 			String password = user.getPassword();
 

@@ -110,9 +110,11 @@ public class UserGroupController {
 		try {
 			
 			Page<UserGroup> page = usergroupdetailservice.getAllUserGroupsWithPaging(pageNumber,pageSize);
-			long totalRecords = (int) page.getTotalElements();
+			List<UserGroup> pageContent = page.getContent();
+
+			int totalRecords = (int) page.getTotalElements();
 			
-			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(page.getContent(), "Listed all user groups", HttpStatus.OK.value(), request.getServletPath(), totalRecords);
+			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(pageContent, "Listed all user groups", HttpStatus.OK.value(), request.getServletPath(), totalRecords);
             return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
