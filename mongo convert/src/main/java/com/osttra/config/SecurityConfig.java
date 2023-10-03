@@ -24,6 +24,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -31,8 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
- 
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osttra.helper.AuthEntryPointJwt;
@@ -55,6 +55,7 @@ public class SecurityConfig {
 
   @Autowired
   private AuthEntryPointJwt unauthorizedHandler;
+  
 
  
 
@@ -85,8 +86,6 @@ public class SecurityConfig {
       return (request, response, e) -> {
           response.setContentType("application/json");
           response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-
- 
 
           // Customize the JSON response as needed
           Map<String, String> responseBody = new HashMap<>();
@@ -127,6 +126,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> 
           auth.antMatchers("/api/auth/**").permitAll()
               .antMatchers("/api/test/**").permitAll()
+              .antMatchers("/actuator").permitAll()
               .antMatchers("/signin").permitAll()
               .antMatchers("/users/**").permitAll()
               .antMatchers("/usergroups/**").permitAll()
