@@ -160,29 +160,6 @@ public class UserGroupController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 		
 	@PutMapping("/updategroup/{usergroupid}")
 	public ResponseEntity<?> updateUserGroup(@PathVariable String usergroupid, @RequestBody UserGroup updatedUserGroup,

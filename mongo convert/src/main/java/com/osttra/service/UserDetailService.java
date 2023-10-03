@@ -14,7 +14,7 @@ public interface UserDetailService {
 
 	public ResponseEntity<String> sendJsonToExternalApi(String externalApiUrl, HttpMethod httpMethod, String jsonPayload);
 
-	 
+	public boolean isUsernameDuplicate(String username);
 
 	public User saveUser(User user);
 

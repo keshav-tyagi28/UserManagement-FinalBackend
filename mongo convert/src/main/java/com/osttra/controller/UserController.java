@@ -104,7 +104,7 @@ public class UserController {
 	public ResponseEntity<Object> addUser(@RequestBody User user, HttpServletRequest request) {
 		try {
 
-			if (userRepository.existsById(user.getUsername())) {
+			if (userDetailsService.isUsernameDuplicate(user.getUsername())) {
 				// Username is already taken, return a response indicating it's not allowed
 				CustomResponse<String> errorResponse = new CustomResponse<>("", "Duplicate User", 409,
 						request.getServletPath());

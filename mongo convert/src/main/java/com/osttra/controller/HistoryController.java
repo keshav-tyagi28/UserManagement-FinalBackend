@@ -57,7 +57,7 @@ public class HistoryController {
 	UserRepository userRepository;
 
 	@Autowired
-	UserGroupController userGroupController;
+	UserController userGroupController;
 
 	@Autowired
 	private RestTemplate restTemplate;
