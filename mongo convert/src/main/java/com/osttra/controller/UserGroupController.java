@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -525,6 +527,90 @@ public class UserGroupController {
 			}
 
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		@GetMapping("/search/resource")
+		public ResponseEntity<?> getResource(
+		    @RequestParam(name = "search", required = true) String search,
+		    @RequestParam(defaultValue = "1") int pageNumber,
+		    HttpServletRequest request) {
+
+		    try {
+		    	
+		        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+		        Page<UserGroup> page = usergroupdetailservice.search(search, pageable);
+
+		        List<UserGroup> pageContent = page.getContent();
+		        int totalSearchResults = (int) page.getTotalElements();
+
+		        CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(
+		            pageContent,
+		            "Listed all searched usergroups",
+		            HttpStatus.OK.value(),
+		            request.getServletPath(),
+		            totalSearchResults
+		        );
+
+		        return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+		    } catch (IllegalArgumentException e) {
+
+		        CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(
+		            null,
+		            "Bad Request: " + e.getMessage(),
+		            HttpStatus.BAD_REQUEST.value(),
+		            request.getRequestURI()
+		        );
+
+		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+		    } catch (Exception e) {
+
+		        CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(
+		            null,
+		            "Internal Server Error",
+		            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+		            request.getRequestURI()
+		        );
+
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		    }
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 }
 	    
 	    
