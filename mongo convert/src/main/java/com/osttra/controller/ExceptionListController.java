@@ -1,689 +1,635 @@
-package com.osttra.controller;
-
- 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
- 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-
- 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.osttra.entity.TemaExceptionEntity;
-import com.osttra.repository.temaDatabase.TemaExceptionRepository;
-import com.osttra.service.ExceptionManagementServiceImp;
-
- 
-
- 
-
-@RestController
-@CrossOrigin
-@RequestMapping("/api")
-public class ExceptionListController {
-
-	String ipAddress = "10.196.22.55";
-
-	@Autowired
-	ExceptionManagementServiceImp exceptionManagementServiceImp;
-
- 
-
-	@Autowired
-	TemaExceptionRepository temaExceptionRepository;
-
- 
-
- 
-
-	@Autowired
-	RestTemplate restTemplate;
-
- 
-
- 
-
-	@GetMapping("/getAllExceptions")
-	public ResponseEntity<?> getAllExceptionList() {
-		try {
-			List<TemaExceptionEntity> mongoData = exceptionManagementServiceImp.showAllException();
-			if (mongoData.size() > 0) {
-				return new ResponseEntity<List<TemaExceptionEntity>>(mongoData, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("Data not available", HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			e.printStackTrace(); // You can log the exception or handle it as needed
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("An error occurred while retrieving data from Tema: " + e.getMessage());
-		}
-	}
-
-	@DeleteMapping("/deleteAllSource")
-    public void deleteAllItemsSource() {
-		exceptionManagementServiceImp.deleteAllItemsSource();
-    }
-
-	@DeleteMapping("/deleteAllTema")
-    public void deleteAllItemsTema() {
-		exceptionManagementServiceImp.deleteAllItemsTema();
-    }
-
-
-	@GetMapping("/getUserAssignedExceptions/{userId}")
-	public ResponseEntity<?> getUserAssignedExceptions(@PathVariable  String userId){
-		String externalApiUrl1 = "http://"+ ipAddress +":8080/engine-rest/task?assignee=" + userId + "&name=Perform Task";
-		String externalApiUrl2 = "http://"+ ipAddress +":8080/engine-rest/task?assignee=" + userId + "&name=Escalation";
-        JsonNode apiDataArray1 = restTemplate.getForObject(externalApiUrl1 , JsonNode.class);
-
-        if (apiDataArray1 == null || !apiDataArray1.isArray()) {
-            return ResponseEntity.notFound().build();
-        }
-//        ResponseEntity<String> response = restTemplate.getForEntity(externalApiUrl1, String.class);
-//        String responseBody = response.getBody();
-//        System.out.println("API Response: " + responseBody);
-
-        List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();   
-        for (JsonNode item : apiDataArray1) {
-            if (item.has("processInstanceId")) {
-                String processInstanceIdFromApi = item.get("processInstanceId").asText();
-                TemaExceptionEntity matchingException = temaExceptionRepository.findByProcessId(processInstanceIdFromApi);
-
-                if (matchingException != null) {
-                	System.out.println(matchingException);
-                	try {
-						exceptionManagementServiceImp.updateExceptionStatus(matchingException);
-					} catch (JsonMappingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-                    matchingExceptions.add(matchingException);
-                }
-            }
-        } 
-
-        JsonNode apiDataArray2 = restTemplate.getForObject(externalApiUrl2 , JsonNode.class);
-
-        if (apiDataArray2 == null || !apiDataArray2.isArray()) {
-            return ResponseEntity.notFound().build();
-        }
-//        ResponseEntity<String> response = restTemplate.getForEntity(externalApiUrl1, String.class);
-//        String responseBody = response.getBody();
-//        System.out.println("API Response: " + responseBody);
-
-
-        for (JsonNode item : apiDataArray2) {
-            if (item.has("processInstanceId")) {
-                String processInstanceIdFromApi = item.get("processInstanceId").asText();
-                TemaExceptionEntity matchingException = temaExceptionRepository.findByProcessId(processInstanceIdFromApi);
-
-                if (matchingException != null) {
-                	System.out.println(matchingException);
-                	try {
-						exceptionManagementServiceImp.updateExceptionStatus(matchingException);
-					} catch (JsonMappingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-                    matchingExceptions.add(matchingException);
-                }
-            }
-        }
-
- 
-
-        return ResponseEntity.ok(matchingExceptions);
-
-
-}
-
-
-
-	@GetMapping("/getUserAssignedFourEyeCheckUpExceptions/{userId}")
-	public ResponseEntity<?> getUserAssignedFourEyeCheckUpExceptions(@PathVariable  String userId){
-		String externalApiUrl = "http://"+ ipAddress +":8080/engine-rest/task?assignee=" + userId + "&name=4-eye check";
-		RestTemplate restTemplate = new RestTemplate();
-        JsonNode apiDataArray = restTemplate.getForObject(externalApiUrl, JsonNode.class);
-
- 
-
-        if (apiDataArray == null || !apiDataArray.isArray()) {
-            return ResponseEntity.notFound().build();
-        }
-
- 
-
-        ResponseEntity<String> response = restTemplate.getForEntity(externalApiUrl, String.class);
-        String responseBody = response.getBody();
-        System.out.println("API Response: " + responseBody);
-
-        List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
-
- 
-
-        
-        for (JsonNode item : apiDataArray) {
-            if (item.has("processInstanceId")) {
-                String processInstanceIdFromApi = item.get("processInstanceId").asText();
-
-                TemaExceptionEntity matchingException =   temaExceptionRepository.findByProcessId(processInstanceIdFromApi);
-
-                if (matchingException != null) {
-                	System.out.println(matchingException);
-                	try {
-						exceptionManagementServiceImp.updateExceptionStatus(matchingException);
-					} catch (JsonMappingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-                    matchingExceptions.add(matchingException);
-                }
-            }
-        }
-        return ResponseEntity.ok(matchingExceptions);   
-}
-
- 
-
-	
-	@GetMapping("/getUnclaimedFourEye/{userId}")
-	public ResponseEntity<?> getUnclaimedFourEye(@PathVariable String userId) {
-
-
-            String initialApiUrl = "http://" + ipAddress + ":8080/engine-rest/group?member=" + userId;
-            JsonNode apiDataArray = restTemplate.getForObject(initialApiUrl, JsonNode.class);
-
-            if (apiDataArray == null || !apiDataArray.isArray()) {
-                return ResponseEntity.notFound().build();
-            }
-
- 
-
- 
-
-            else {
-
-                List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
-
-                for (JsonNode item : apiDataArray) {
-
-
-                    if (item.has("id")) {
-                        String groupId = item.get("id").asText();
-
-                        String groupApiUrl = "http://" + ipAddress + ":8080/engine-rest/task?candidateGroup=" + groupId;
-                        try {
-                          JsonNode apiDataArray2 = restTemplate.getForObject(groupApiUrl, JsonNode.class);
-
- 
-
-                          for (JsonNode item2 : apiDataArray2) {
-                              if (item2.has("processInstanceId") && (item2.get("name").asText()).equals("4-Eye check" )) {
-
-                                  String processInstanceIdFromApi = item2.get("processInstanceId").asText();
-
-                                  TemaExceptionEntity matchingException = temaExceptionRepository.findByProcessId(processInstanceIdFromApi);
-
- 
-
-                                  if (matchingException != null) {
-                                      System.out.println(matchingException);
-                                      matchingExceptions.add(matchingException);
-                                  }
-                              }
-                          }
-                      } catch (HttpStatusCodeException e) {
-
-                          System.err.println("Failed to fetch data for group: " + groupId);
-                      }
-                    }
-                }
-            return ResponseEntity.ok(matchingExceptions);
-        }
-        }
-
-	@GetMapping("/getUnclaimedPerformTask/{userId}")
-	public ResponseEntity<?> getUnclaimedPerformTask(@PathVariable String userId) {
-
-
-            String initialApiUrl = "http://" + ipAddress + ":8080/engine-rest/group?member=" + userId;
-            JsonNode apiDataArray = restTemplate.getForObject(initialApiUrl, JsonNode.class);
-
-            if (apiDataArray == null || !apiDataArray.isArray()) {
-                return ResponseEntity.notFound().build();
-            }
-
- 
-
- 
-
-            else {
-
-                List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
-
-                for (JsonNode item : apiDataArray) {
-
-
-                    if (item.has("id")) {
-                        String groupId = item.get("id").asText();
-
-                        String groupApiUrl = "http://" + ipAddress + ":8080/engine-rest/task?candidateGroup=" + groupId;
-                        try {
-                          JsonNode apiDataArray2 = restTemplate.getForObject(groupApiUrl, JsonNode.class);
-
- 
-
-                          for (JsonNode item2 : apiDataArray2) {
-                              if (item2.has("processInstanceId") && !(item2.get("name").asText()).equals("4-Eye check" ) ){
-
-                                  String processInstanceIdFromApi = item2.get("processInstanceId").asText();
-
-                                  TemaExceptionEntity matchingException = temaExceptionRepository.findByProcessId(processInstanceIdFromApi);
-
- 
-
-                                  if (matchingException != null) {
-                                      System.out.println(matchingException);
-                                      matchingExceptions.add(matchingException);
-                                  }
-                              }
-                          }
-                      } catch (HttpStatusCodeException e) {
-
-                          System.err.println("Failed to fetch data for group: " + groupId);
-                      }
-                    }
-                }
-            return ResponseEntity.ok(matchingExceptions);
-        }
-        }
-
-
-
-
- 
-
-                
-
-
-	@PostMapping("/assignException")
-	public ResponseEntity<?> assignExceptionToGroup(@RequestBody Map<String, String> assignGroup) {
-
- 
-
-		try {
-
- 
-
-			String processId = exceptionManagementServiceImp.getProcessId(assignGroup.get("exceptionId"));
-
- 
-
-			String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
-
- 
-
-			System.out.println(taskId);
-
- 
-
-			assignGroup.put("type", "candidate");
-
- 
-
-			assignGroup.remove("exceptionId");
-
- 
-
-			System.out.println("process id is " + processId);
-
- 
-
-			exceptionManagementServiceImp.deleteOtherUser(taskId);
-
- 
-
-			System.out.println("task id is " + taskId);
-
- 
-
-			String externalApiUrl = "http://"+ ipAddress +":8080/engine-rest/task/" + taskId + "/identity-links";
-
- 
-
-			//String externalApiUrl = "https://jsonplaceholder.typicode.com/posts";
-
- 
-
-			String assignGroupJson = exceptionManagementServiceImp.mapToJson(assignGroup);
-			System.out.println(assignGroupJson);
-
- 
-
-			System.out.println("in assignGroup Controller");
-
- 
-
- 
-
-//			HttpHeaders headers = new org.springframework.http.HttpHeaders();
-
- 
-
-//			headers.setContentType(MediaType.APPLICATION_JSON);
-
- 
-
-//			HttpEntity<String> requestEntity = new HttpEntity<>(assignGroupJson, headers);
-
- 
-
-//          ResponseEntity<String> response = restTemplate.postForEntity(externalApiUrl, requestEntity, String.class);
-
- 
-
-		
-
- 
-
-			ResponseEntity<String> response = exceptionManagementServiceImp.postJsonToExternalApi(externalApiUrl, assignGroupJson);
-
- 
-
-			
-
- 
-
-			if (response.getStatusCode().is2xxSuccessful()) {
-
- 
-
-				System.out.println(assignGroupJson);
-
- 
-
-				return ResponseEntity.ok("Data sent to Spring Boot and external API successfully");
-
- 
-
-			} else {
-
- 
-
-				System.out.println("inside assignGroup Controller If condition");
-
- 
-
- 
-
-				return ResponseEntity.status(response.getStatusCode())
-
- 
-
-						.body("External API returned an error: " + response.getBody());
-
- 
-
-			}
-
- 
-
-		} catch (Exception e) {
-
- 
-
- 
-
-			e.printStackTrace();
-
- 
-
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-
- 
-
-					.body("Error occurred while processing the request");
-
- 
-
-		}
-
- 
-
-	}
-
- 
-
-	@PostMapping("/claimUser")
-	public ResponseEntity<?> assignUser(@RequestBody Map<String, String> assignUser) {
-		try {
-			// String externalApiUrl = "https://jsonplaceholder.typicode.com/posts";
-			System.out.print(assignUser);
-			System.out.print(assignUser.get("exceptionId"));
-			System.out.print(assignUser.get("userId"));
-			String processId = exceptionManagementServiceImp.getProcessId(assignUser.get("exceptionId"));
-			String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
-			assignUser.remove("exceptionId");
-			String externalApiUrl = "http://"+ ipAddress +":8080/engine-rest/task/" + taskId + "/claim";
-			String assignUserJson = exceptionManagementServiceImp.mapToJson(assignUser);
-			System.out.println(assignUserJson);
-
- 
-
-//			HttpHeaders headers = new org.springframework.http.HttpHeaders();
-//			headers.setContentType(MediaType.APPLICATION_JSON);
-//			HttpEntity<String> requestEntity = new HttpEntity<>(assignUserJson, headers);
-//			ResponseEntity<String> response = restTemplate.postForEntity(externalApiUrl, requestEntity, String.class);
-
-			ResponseEntity<String> response = exceptionManagementServiceImp.postJsonToExternalApi(externalApiUrl, assignUserJson);
-
-			if (response.getStatusCode().is2xxSuccessful()) {
-				System.out.println(assignUserJson);
-				return ResponseEntity.ok("Data sent to Spring Boot and external API successfully");
-			} else {
-				System.out.println("inside assignGroup Controller If condition");
-				return ResponseEntity.status(response.getStatusCode())
-						.body("External API returned an error: " + response.getBody());
-			}
-		} catch (Exception e) {
-
- 
-
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error occurred while processing the request");
-		}
-	}
-
-
-
-	@PostMapping("/completedFourEyeCheckUp")
-	public ResponseEntity<?> completedFourEyeCheckUp(@RequestBody Map<String, String> exceptionId) {
-		try {
-			// String externalApiUrl = "https://jsonplaceholder.typicode.com/posts";
-			String processId = exceptionManagementServiceImp.getProcessId(exceptionId.get("exceptionId"));
-			String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
-			String externalApiUrl = "http://"+ ipAddress +":8080/engine-rest/task/" + taskId + "/complete";
-			System.out.println("task id :" + taskId);
-			String jsonString =  "{ \"variables\": { \"i\": { \"value\": 0 } } }";
-			System.out.println(jsonString);
-			 ResponseEntity<String> response = exceptionManagementServiceImp.postJsonToExternalApi(externalApiUrl,jsonString);
-			if (response.getStatusCode().is2xxSuccessful()) {
-				return ResponseEntity.ok("Group to Four Eye Check done !!!");
-			} else {
-				System.out.println("inside else of controller of groupt to 4 eye check");
-				return ResponseEntity.status(response.getStatusCode())
-						.body("External API returned an error: " + response.getBody());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error occurred while processing the request");
-		}
-}
-
-
-//    public ResponseEntity<?> getExceptionDetail(@PathVariable String exceptionId) {
-//        try {
-//            Optional<TemaMongoEntity> exceptionDetails = exceptionManagementService.getExceptionDetails(exceptionId);
+//package com.osttra.controller;
 //
-//            if (exceptionDetails.isPresent()) {
-//                return ResponseEntity.ok(exceptionDetails.get());
-//            } else {
-//                return ResponseEntity.notFound().build();
-//            }
+// 
+//
+//
+//
+//import java.util.List;
+//
+//import java.util.Map;
+//
+// 
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//
+//import org.springframework.http.HttpStatus;
+//
+//import org.springframework.http.ResponseEntity;
+//
+//import org.springframework.web.bind.annotation.CrossOrigin;
+//
+//import org.springframework.web.bind.annotation.GetMapping;
+//
+//import org.springframework.web.bind.annotation.PatchMapping;
+//
+//import org.springframework.web.bind.annotation.PathVariable;
+//
+//import org.springframework.web.bind.annotation.PostMapping;
+//
+//import org.springframework.web.bind.annotation.RequestBody;
+//
+//import org.springframework.web.bind.annotation.RequestMapping;
+//
+//import org.springframework.web.bind.annotation.RestController;
+//
+//import org.springframework.web.client.RestTemplate;
+//
+// 
+//
+//import com.fasterxml.jackson.databind.JsonNode;
+//
+//import com.osttra.entity.TemaExceptionEntity;
+//
+//import com.osttra.repository.temaDatabase.TemaExceptionRepository;
+//
+//import com.osttra.service.ExceptionManagementServiceImp;
+//
+// 
+//
+//@RestController
+//
+//@CrossOrigin
+//
+//@RequestMapping("/api")
+//
+//public class ExceptionListController {
+//
+// 
+//
+//	String ipAddress = "localhost";
+//
+// 
+//
+//	@Autowired
+//
+//	ExceptionManagementServiceImp exceptionManagementServiceImp;
+//
+// 
+//
+//	@Autowired
+//
+//	TemaExceptionRepository temaExceptionRepository;
+//
+// 
+//
+//	@Autowired
+//
+//	RestTemplate restTemplate;
+//
+// 
+//
+//	@GetMapping("/getAllExceptions")
+//
+//	public ResponseEntity<?> getAllTemaExceptionList() {
+//
+//		try {
+//
+//			List<TemaExceptionEntity> mongoData = exceptionManagementServiceImp.getAllTemaException();
+//
+//			if (!mongoData.isEmpty()) {
+//
+//				return new ResponseEntity<>(mongoData, HttpStatus.OK);
+//
+//			} else {
+//
+//				return new ResponseEntity<>("Data not available",HttpStatus.OK);
+//
+//			}
+//
+//		} catch (Exception e) {
+//
+//			// log.error("An error occurred while retrieving data from Tema", e);
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("An error occurred while retrieving data from Tema: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@PostMapping("/assignException")
+//
+//	public ResponseEntity<String> assignExceptionToGroup(@RequestBody Map<String, String> assignGroup) {
+//
+//		try {
+//
+//			String response = exceptionManagementServiceImp.assignExceptionToGroup(assignGroup);
+//
+//			return ResponseEntity.ok(response);
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@GetMapping("/getUserAssignedExceptions/{userId}")
+//
+//	public ResponseEntity<?> getUserAssignedExceptions(@PathVariable String userId) {
+//
+//		try {
+//
+//			List<TemaExceptionEntity> matchingExceptions = exceptionManagementServiceImp
+//
+//					.getUserAssignedExceptions(userId);
+//
+//			if (matchingExceptions.isEmpty()) {
+//
+//				return ResponseEntity.noContent().build();
+//
+//			}
+//
+//			return ResponseEntity.ok(matchingExceptions);
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@GetMapping("/getUserAssignedFourEyeCheckUpExceptions/{userId}")
+//
+//	public ResponseEntity<?> getUserAssignedFourEyeCheckUpExceptions(@PathVariable String userId) {
+//
+//		try {
+//
+//			List<TemaExceptionEntity> matchingExceptions = exceptionManagementServiceImp
+//
+//					.getUserAssignedFourEyeCheckUpExceptions(userId);
+//
+// 
+//
+//			if (matchingExceptions.isEmpty()) {
+//
+//				return ResponseEntity.noContent().build();
+//
+//			}
+//
+// 
+//
+//			return ResponseEntity.ok(matchingExceptions);
+//
+//		} catch (Exception e) {
+//
+//			e.printStackTrace();
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@GetMapping("/getUnclaimedPerformTask/{userId}")
+//
+//	public ResponseEntity<?> getUnclaimedPerformTask(@PathVariable String userId) {
+//
+//		try {
+//
+//			List<TemaExceptionEntity> matchingExceptions = exceptionManagementServiceImp
+//
+//					.getUnclaimedPerformTaskExceptions(userId);
+//
+//			if (matchingExceptions.isEmpty()) {
+//
+//				return ResponseEntity.noContent().build();
+//
+//			}
+//
+//			return ResponseEntity.ok(matchingExceptions);
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//    @GetMapping("/getUnclaimedFourEye/{userId}")
+//
+//    public ResponseEntity<?> getUnclaimedFourEye(@PathVariable String userId) {
+//
+//		try {
+//
+//			List<TemaExceptionEntity> matchingExceptions = exceptionManagementServiceImp
+//
+//					.getUnclaimedFourEyeExceptions(userId);
+//
+//			if (matchingExceptions.isEmpty()) {
+//
+//				return ResponseEntity.noContent().build();
+//
+//			}
+//
+//			return ResponseEntity.ok(matchingExceptions);
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+//	
+//
+//	@PostMapping("/claimUser")
+//
+//	public ResponseEntity<?> claimExceptionByUser(@RequestBody Map<String, String> userExceptionIdMap) {
+//
+//		ResponseEntity<String> response = exceptionManagementServiceImp.claimExceptionByUser(userExceptionIdMap);
+//
+// 
+//
+//		if (response.getStatusCode().is2xxSuccessful()) {
+//
+//			return ResponseEntity.ok("Claimed exception successfully.");
+//
+//		} else {
+//
+//			return ResponseEntity.status(response.getStatusCode())
+//
+//					.body("Failed to claim exception: " + response.getBody());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@PostMapping("/completedFourEyeCheckUp")
+//
+//	public ResponseEntity<?> completedFourEyeCheckUp(@RequestBody Map<String, String> exceptionId) {
+//
+//		ResponseEntity<String> response = exceptionManagementServiceImp
+//
+//				.completeFourEyeCheckUpTask(exceptionId.get("exceptionId"));
+//
+// 
+//
+//		if (response.getStatusCode().is2xxSuccessful()) {
+//
+//			return ResponseEntity.ok("Group to Four Eye Check done !!!");
+//
+//		} else {
+//
+//			return ResponseEntity.status(response.getStatusCode())
+//
+//					.body("Failed to complete Four Eye Check: " + response.getBody());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@GetMapping("/get/{exceptionId}")
+//
+//	public ResponseEntity<?> getExceptionDetail(@PathVariable String exceptionId) {
+//
+//		try {
+//
+//			TemaExceptionEntity exceptionDetails = exceptionManagementServiceImp.getExceptionDetails(exceptionId);
+//
+//			if (exceptionDetails != null) {
+//
+//				return ResponseEntity.ok(exceptionDetails);
+//
+//			} else {
+//
+//				return ResponseEntity.notFound().build();
+//
+//			}
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Failed to retrieve exception details: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@GetMapping("/getHistory/{exceptionId}")
+//
+//	public ResponseEntity<?> getExceptionHistory(@PathVariable String exceptionId) {
+//
+//		try {
+//
+//			List<Map<String, Object>> exceptionHistory = exceptionManagementServiceImp.getExceptionHistory(exceptionId);
+//
+//			if (!exceptionHistory.isEmpty()) {
+//
+//				return ResponseEntity.ok(exceptionHistory);
+//
+//			} else {
+//
+//				return ResponseEntity.notFound().build();
+//
+//			}
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Failed to retrieve exception history: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@PostMapping("/groupToFourEyeCheck")
+//
+//	public ResponseEntity<?> groupToFourEyeCheck(@RequestBody Map<String, String> request) {
+//
+//		try {
+//
+//			String responseMessage = exceptionManagementServiceImp.completeTask(request, 0);
+//
+//			return ResponseEntity.ok(responseMessage);
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@PostMapping("/groupToEscalation")
+//
+//	public ResponseEntity<?> groupToEscalation(@RequestBody Map<String, String> request) {
+//
+//		try {
+//
+//			String responseMessage = exceptionManagementServiceImp.completeTask(request, 1);
+//
+//			System.out.println("inside groupToesc");
+//
+//			return ResponseEntity.ok(responseMessage);
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@PostMapping("/escalationToFourEyeCheck")
+//
+//	public ResponseEntity<?> escalationToFourEyeCheck(@RequestBody Map<String, String> request) {
+//
+//		try {
+//
+//			String responseMessage = exceptionManagementServiceImp.completeTask(request, 3);
+//
+//			return ResponseEntity.ok(responseMessage);
+//
+//		} catch (Exception e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//					.body("Error occurred while processing the request: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	@PatchMapping("/updateResolutionCount/{exceptionId}")
+//
+//	public ResponseEntity<String> updateResolutionCount(@PathVariable String exceptionId,
+//
+//			@RequestBody int resolutionCount) {
+//
+//		try {
+//
+//			exceptionManagementServiceImp.updateResolutionCount(exceptionId, resolutionCount);
+//
+//			return ResponseEntity.ok("Attribute updated successfully");
+//
+//		} catch (RuntimeException e) {
+//
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+//
+//		}
+//
+//	}
+//
+// 
+//
+//	
+//
+//    
+//
+//    @GetMapping("/escalationNumber")
+//
+//    public ResponseEntity<?> getEscalationCount() {
+//
+//        try {
+//
+//            List<Map<String, Object>> monthlyData = exceptionManagementServiceImp.getEscalationCount();
+//
+//            return ResponseEntity.ok(monthlyData);
+//
 //        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//
+//            e.printStackTrace();
+//
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//                .body("Error occurred while processing the request: " + e.getMessage());
+//
 //        }
+//
 //    }
-
-	@GetMapping("/get/{exceptionId}")
-    public ResponseEntity<?> getExceptionDetail(@PathVariable String exceptionId) {
-        try {
-        	System.out.println(" inside get exception details"+ exceptionId);
-            TemaExceptionEntity exceptionDetails = exceptionManagementServiceImp.getExceptionDetails(exceptionId);
-            if (exceptionDetails != null) {
-                return ResponseEntity.ok(exceptionDetails);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
- 
-
-    @GetMapping("/getHistory/{exceptionId}")
-    public ResponseEntity<?> getExceptionHistory(@PathVariable String exceptionId) {
-        try {
-        	System.out.println(" inside get exception details"+ exceptionId);
-        	List<Map<String, Object>> exceptionHistory = exceptionManagementServiceImp.getExceptionHistory(exceptionId);
-        	if (exceptionHistory.size() > 0) {
-				return new ResponseEntity<List<Map<String, Object>>>(exceptionHistory, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("Data not available", HttpStatus.NOT_FOUND);
-			}
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
- 
-
-  
-	@PostMapping("/groupToFourEyeCheck")
-	public ResponseEntity<?> groupToFourEyeCheck(@RequestBody Map<String, String> exceptionId) {
-		try {
-			// String externalApiUrl = "https://jsonplaceholder.typicode.com/posts";
-			String processId = exceptionManagementServiceImp.getProcessId(exceptionId.get("exceptionId"));
-			String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
-			String externalApiUrl = "http://"+ ipAddress +":8080/engine-rest/task/" + taskId + "/complete";
-			System.out.println("task id :" + taskId);
-			String jsonString =  "{ \"variables\": { \"i\": { \"value\": 0 } } }";
-			System.out.println(jsonString);
-			 ResponseEntity<String> response = exceptionManagementServiceImp.postJsonToExternalApi(externalApiUrl,jsonString);
-			if (response.getStatusCode().is2xxSuccessful()) {
-				return ResponseEntity.ok("Group to Four Eye Check done !!!");
-			} else {
-				System.out.println("inside else of controller of groupt to 4 eye check");
-				return ResponseEntity.status(response.getStatusCode())
-						.body("External API returned an error: " + response.getBody());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error occurred while processing the request");
-		}
-}
-
-	@PostMapping("/groupToEscalation")
-	public ResponseEntity<?> groupToEscalation(@RequestBody Map<String, String> exceptionId) {
-		try {
-			// String externalApiUrl = "https://jsonplaceholder.typicode.com/posts";
-			String processId = exceptionManagementServiceImp.getProcessId(exceptionId.get("exceptionId"));
-			String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
-			String externalApiUrl = "http://"+ ipAddress +":8080/engine-rest/task/" + taskId + "/complete";
-			System.out.println("task id :" + taskId);
-			String jsonString =  "{ \"variables\": { \"i\": { \"value\": 1 } } }";
-			System.out.println(jsonString);
-			 ResponseEntity<String> response = exceptionManagementServiceImp.postJsonToExternalApi(externalApiUrl,jsonString);
-			if (response.getStatusCode().is2xxSuccessful()) {
-				return ResponseEntity.ok("Exception sent from group to escalation !!!");
-			} else {
-				System.out.println("inside else of controller of groupt to 4 eye check");
-				return ResponseEntity.status(response.getStatusCode())
-						.body("External API returned an error: " + response.getBody());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error occurred while processing the request");
-		}
-}
-
-	@PostMapping("/escalationToFourEyeCheck")
-	public ResponseEntity<?> escalationToFourEyeCheck(@RequestBody Map<String, String> exceptionId) {
-		System.out.println("hi");
-		try {
-			// String externalApiUrl = "https://jsonplaceholder.typicode.com/posts";
-			String processId = exceptionManagementServiceImp.getProcessId(exceptionId.get("exceptionId"));
-			System.out.println(processId);
-			String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
-			String externalApiUrl = "http://"+ ipAddress +":8080/engine-rest/task/" + taskId + "/complete";
-			System.out.println("task id :" + taskId);
-			String jsonString =  "{ \"variables\": { \"i\": { \"value\": 3 } } }";
-			 ResponseEntity<String> response = exceptionManagementServiceImp.postJsonToExternalApi(externalApiUrl,jsonString);
-			if (response.getStatusCode().is2xxSuccessful()) {
-				return ResponseEntity.ok("Exception sent from group to escalation !!!");
-			} else {
-				System.out.println("inside else of controller of groupt to 4 eye check");
-				return ResponseEntity.status(response.getStatusCode())
-						.body("External API returned an error: " + response.getBody());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error occurred while processing the request");
-		}
-}
-
-	@PostMapping("/updateResolutionCount/{exceptionId}")
-    public ResponseEntity<?> updateResolutionCount(@PathVariable String exceptionId, @RequestBody String resolutionCount) {
-        try {
-            exceptionManagementServiceImp.updateResolutionCount(exceptionId, resolutionCount);
-            return ResponseEntity.ok("Attribute updated successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while updating the attribute");
-        }
-    }
-}
+//
+// 
+//
+//	
+//
+//	
+//
+//    @GetMapping("/resolutionTime")
+//
+//    public ResponseEntity<?> getResolutionTime() {
+//
+//        try {
+//
+//            List<Map<String, Object>> monthlyData = exceptionManagementServiceImp.getDataForEveryMonth();
+//
+//            return ResponseEntity.ok(monthlyData);
+//
+//        } catch (Exception e) {
+//
+//            e.printStackTrace();
+//
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//
+//                .body("Error occurred while processing the request: " + e.getMessage());
+//
+//        }
+//
+//    }
+//
+// 
+//
+//	
+//
+//	@GetMapping("/getUserId/{exceptionId}")
+//
+//	public ResponseEntity<?> getUserId(@PathVariable  String exceptionId){
+//
+//		String processId = exceptionManagementServiceImp.getProcessId(exceptionId);
+//
+//		String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
+//
+//		String externalApiUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/identity-links?type=assignee";
+//
+//		RestTemplate restTemplate = new RestTemplate();
+//
+//        JsonNode apiDataArray = restTemplate.getForObject(externalApiUrl, JsonNode.class);
+//
+// 
+//
+//        System.out.println(apiDataArray);
+//
+//        if (apiDataArray.size() == 0) {
+//
+//        	return ResponseEntity.ok("NA");
+//
+//        }
+//
+//        	
+//
+//        JsonNode lastObject = apiDataArray.get(apiDataArray.size() - 1);
+//
+//        if (lastObject.has("userId")) {
+//
+//            String lastUserId = lastObject.get("userId").asText();
+//
+//            return ResponseEntity.ok(lastUserId);
+//
+//        }
+//
+// 
+//
+//        return ResponseEntity.ok("NA");
+//
+//}
+//
+//	
+//
+//	@GetMapping("/getUserGroupId/{exceptionId}")
+//
+//	public ResponseEntity<?> getUserGroupId(@PathVariable  String exceptionId){
+//
+//		String processId = exceptionManagementServiceImp.getProcessId(exceptionId);
+//
+//		String taskId = exceptionManagementServiceImp.fetchTaskId(processId);
+//
+//		String externalApiUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/identity-links?type=candidate";
+//
+//		RestTemplate restTemplate = new RestTemplate();
+//
+//        JsonNode apiDataArray = restTemplate.getForObject(externalApiUrl, JsonNode.class);
+//
+// 
+//
+//        System.out.println(apiDataArray);
+//
+//        if (apiDataArray.size() == 0) {
+//
+//        	return ResponseEntity.ok("NA");
+//
+//        }
+//
+//        	
+//
+//        JsonNode lastObject = apiDataArray.get(apiDataArray.size() - 1);
+//
+//        if (lastObject.has("groupId")) {
+//
+//            String lastUserId = lastObject.get("groupId").asText();
+//
+//            return ResponseEntity.ok(lastUserId);
+//
+//        }
+//
+//        
+//
+// 
+//
+//        return ResponseEntity.ok("NA");
+//
+//}
+//
+//	
+//
+//	@GetMapping("/getUserGroups/{userId}")
+//
+//	public JsonNode getUserGroups(@PathVariable  String userId){
+//
+//		try {
+//
+//			return exceptionManagementServiceImp.getUserGroups(userId);
+//
+//		} catch (Exception e) {
+//
+//			
+//
+//			e.printStackTrace();
+//
+//		}
+//
+//		return null;
+//
+//		
+//
+//	}
+//
+//	
+//
+//	
+//
+//}

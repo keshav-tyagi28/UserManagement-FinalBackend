@@ -34,5 +34,5 @@ public class TemaExceptionEntity {
 	    private String updatedAt;
 	    private String assign = "Assign";
 	    private String processId;
-	    private String resolutionCount;
+	    private int resolutionCount=-1;
 }

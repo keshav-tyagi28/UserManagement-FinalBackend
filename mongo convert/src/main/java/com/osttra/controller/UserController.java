@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.osttra.config.CustomResponseErrorHandler;
+import com.osttra.config.SecurityConfig;
 import com.osttra.entity.User;
 import com.osttra.entity.UserGroup;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -92,10 +94,9 @@ public class UserController {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	
-
 	@Autowired
 	private CustomResponseErrorHandler customResponseErrorHandler;
+
 
 	private String ip = "10.196.22.55:8080";
 
@@ -129,7 +130,8 @@ public class UserController {
 			String jsonPayload = jsonObject.toString();
 			String externalApiUrl = "http://" + ip + "/engine-rest/user/create";
 
-		//	ResponseEntity<String> responseEntity = userDetailsService.sendJsonToExternalApi(externalApiUrl,
+			// ResponseEntity<String> responseEntity =
+			// userDetailsService.sendJsonToExternalApi(externalApiUrl,
 			// HttpMethod.POST, jsonPayload);
 
 			String password = user.getPassword();
@@ -390,57 +392,40 @@ public class UserController {
 		}
 	}
 
-	
-
 ///////////////////////////////////////////////////// SEARCH ///////////////////////////////////////////////////////////////////
-	
-	
+
 	@GetMapping("/search/resource")
-	public ResponseEntity<?> getResource(
-	    @RequestParam(name = "search", required = true) String search,
-	    @RequestParam(defaultValue = "1") int pageNumber,
-	    HttpServletRequest request) {
+	public ResponseEntity<?> getResource(@RequestParam(name = "search", required = true) String search,
+			@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request) {
 
-	    try {
-	    	
-	        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
-	        Page<User> page = userDetailsService.search(search, pageable);
+		try {
 
-	        List<User> pageContent = page.getContent();
-	        int totalSearchResults = (int) page.getTotalElements();
+			Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+			Page<User> page = userDetailsService.search(search, pageable);
 
-	        CustomResponseWithTotalRecords<List<User>> successResponse = new CustomResponseWithTotalRecords<>(
-	            pageContent,
-	            "Listed all searched users",
-	            HttpStatus.OK.value(),
-	            request.getServletPath(),
-	            totalSearchResults
-	        );
+			List<User> pageContent = page.getContent();
+			int totalSearchResults = (int) page.getTotalElements();
 
-	        return new ResponseEntity<>(successResponse, HttpStatus.OK);
+			CustomResponseWithTotalRecords<List<User>> successResponse = new CustomResponseWithTotalRecords<>(
+					pageContent, "Listed all searched users", HttpStatus.OK.value(), request.getServletPath(),
+					totalSearchResults);
 
-	    } catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
-	        CustomResponse<List<User>> errorResponse = new CustomResponse<>(
-	            null,
-	            "Bad Request: " + e.getMessage(),
-	            HttpStatus.BAD_REQUEST.value(),
-	            request.getRequestURI()
-	        );
+		} catch (IllegalArgumentException e) {
 
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+			CustomResponse<List<User>> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
 
-	    } catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
-	        CustomResponse<List<User>> errorResponse = new CustomResponse<>(
-	            null,
-	            "Internal Server Error",
-	            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-	            request.getRequestURI()
-	        );
+		} catch (Exception e) {
 
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-	    }
+			CustomResponse<List<User>> errorResponse = new CustomResponse<>(null, "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		}
 	}
 
-   }
+}
