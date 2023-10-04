@@ -1,10 +1,17 @@
 
-
 package com.osttra.service;
 
- 
-
+import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +20,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osttra.entity.SourceExceptionEntity;
@@ -28,93 +36,29 @@ import com.osttra.entity.TemaExceptionEntity;
 import com.osttra.repository.sourceExceptionDatabase.SourceExceptionRepository;
 import com.osttra.repository.temaDatabase.TemaExceptionRepository;
 
- 
-
 @Service
 
 public class ExceptionManagementServiceImp implements ExceptionManagementService {
 
- 
-
-	String ipAddress = "10.196.22.55";
-
- 
+	String ipAddress = "localhost";
 
 	@Autowired
 
 	private SourceExceptionRepository sourceExceptionRepository;
 
- 
-
 	@Autowired
 
 	private TemaExceptionRepository temaExceptionRepository;
-
- 
 
 	@Autowired
 
 	RestTemplate restTemplate;
 
-	
-	public String fetchExceptionIdByProcessId(String processId) {
-
-	    Optional<TemaExceptionEntity> exceptionEntityOptional = temaExceptionRepository.findExceptionByProcessId(processId);
-
- 
-
-	    if (exceptionEntityOptional.isPresent()) {
-
-	        TemaExceptionEntity exceptionEntity = exceptionEntityOptional.get();
-
-	        String exceptionId = exceptionEntity.getExceptionId();
-
-	        return exceptionId;
-
-	    }
-
-	        return "";
-
-	    
-
-	}
- 
-
 	public List<SourceExceptionEntity> getAllFromSource() {
-
- 
 
 		return sourceExceptionRepository.findAll();
 
 	}
-
- 
-
-	public void deleteAllItemsSource() {
-
-		sourceExceptionRepository.deleteAll();
-
-	}
-
- 
-
-	public void deleteAllItemsTema() {
-
-		temaExceptionRepository.deleteAll();
-
-	}
-
- 
-
-//	public List<TemaMongoEntity> getAllFromTema() {
-
-//
-
-//		return temaMongoRepository.findAll();
-
-//	}
-
- 
 
 	public SourceExceptionEntity addExceptionInSource(SourceExceptionEntity sourceData) {
 
@@ -122,203 +66,47 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 	}
 
-//    
+	public void deleteAllItemsSource() {
 
-//    public void migrateData() {
+		try {
 
-//        List<SourceMongoEntity> dataToMigrate = sourceMongoRepository.findAll();
+			sourceExceptionRepository.deleteAll();
 
-//        for (SourceMongoEntity mongoData : dataToMigrate) {
+		} catch (Exception e) {
 
-//        	 if (!temaMongoRepository.existsById(mongoData.getExceptionId())) {
+			// log.error("An error occurred while deleting all items from Source
 
-//        temaMongoRepository.save(mongoData);
+			// collection.", e);
 
-//        }
+			throw new RuntimeException("An error occurred while deleting all items.", e);
 
-//        }
+		}
 
-//    }
+	}
 
-//    
+	public void deleteAllItemsTema() {
 
-////    public void migrateData() {
+		try {
 
-////        List<SourceMongoEntity> sourceData = sourceMongoRepository.findAll();
+			temaExceptionRepository.deleteAll();
 
-////        List<TemaMongoEntity> destinationData = new ArrayList<>();
+		} catch (Exception e) {
 
-////
+			throw new RuntimeException("Error while deleting Tema items: " + e.getMessage(), e);
 
-////        for (SourceMongoEntity sourceEntity : sourceData) {
+		}
 
-////            // Check if a document with the same exceptionId exists in the destination database
-
-////           
-
-////
-
-////          //  if (!temaMongoRepository.existsById(sourceEntity.getExceptionId())) {
-
-////                // Document with the same exceptionId doesn't exist in destination, so migrate it
-
-////                TemaMongoEntity destinationEntity = new TemaMongoEntity();
-
-////               // destinationEntity.setAssign("ASSIGN");
-
-////                // Copy fields from sourceEntity to destinationEntity
-
-////                // ...
-
-////                // Save destinationEntity to the destination database
-
-////                destinationData.add(destinationEntity);
-
-////              
-
-////          //  }
-
-////        }
-
-////        temaMongoRepository.saveAll(destinationData);
-
-////    
-
-////    }
-
- 
-
-//*********************old migration code***************************************8	
-
-//	public void migrateData() {
-
-//		List<SourceMongoEntity> sourceData = sourceMongoRepository.findAll();
-
-//
-
-//		for (SourceMongoEntity sourceEntity : sourceData) {
-
-//			// Check if a document with the same exceptionId exists in the destination
-
-//			// database
-
-//			TemaMongoEntity existingEntity = temaMongoRepository.findByExceptionId(sourceEntity.getExceptionId());
-
-//
-
-//			if (existingEntity == null) {
-
-//
-
-//				TemaMongoEntity destinationEntity = new TemaMongoEntity();
-
-//
-
-//				destinationEntity.setExceptionId(sourceEntity.getExceptionId());
-
-//				destinationEntity.setTradeId(sourceEntity.getTradeId());
-
-//				destinationEntity.setCounterParty(sourceEntity.getCounterParty());
-
-//				destinationEntity.setTradeDate(sourceEntity.getTradeDate());
-
-//				destinationEntity.setExceptionType(sourceEntity.getExceptionType());
-
-//				destinationEntity.setResolutionSteps(sourceEntity.getResolutionSteps());
-
-//				destinationEntity.setStatus(sourceEntity.getStatus());
-
-//				destinationEntity.setPriority(sourceEntity.getPriority());
-
-//				destinationEntity.setDescription(sourceEntity.getDescription());
-
-//				destinationEntity.setCreatedBy(sourceEntity.getCreatedBy());
-
-//				destinationEntity.setCreatedAt(sourceEntity.getCreatedAt());
-
-//				destinationEntity.setUpdatedBy(sourceEntity.getUpdatedBy());
-
-//				destinationEntity.setUpdatedAt(sourceEntity.getUpdatedAt());
-
-//				destinationEntity.setAssign("ASSIGN"); 
-
-//
-
-//			    String exceptionId = destinationEntity.getExceptionId();
-
-//			    
-
-////				String externalApiUrl = "https://example.com/api/products?exceptionId=" + exceptionId;
-
-////				ResponseEntity<String> response = restTemplate.exchange(externalApiUrl, HttpMethod.GET, null, String.class);
-
-//			    
-
-//			    Map<String, String> mapExceptionId = new HashMap<>();
-
-//			    mapExceptionId.put("exceptionId", exceptionId);
-
-//			    
-
-//			    String ExceptionIdJson = maptoJson(mapExceptionId);
-
-//			    
-
-//			    String externalApiUrl = "https://example.com/api/products";
-
-//			    
-
-//				HttpHeaders headers = new org.springframework.http.HttpHeaders();
-
-//				headers.setContentType(MediaType.APPLICATION_JSON);
-
-//				HttpEntity<String> requestEntity = new HttpEntity<>(ExceptionIdJson, headers);
-
-//				ResponseEntity<String> response = restTemplate.postForEntity(externalApiUrl, requestEntity, String.class);
-
-//				
-
-//				String businessId = extractProductIdFromResponse(response.getBody());
-
-//				destinationEntity.setBusinessId(businessId); 				
-
-//				temaMongoRepository.save(destinationEntity);
-
-//			}
-
-//		}
-
-//	}
-
- 
-
-	// new migration method
-
- 
+	}
 
 	public void migrateData() {
 
 		List<SourceExceptionEntity> sourceData = sourceExceptionRepository.findAll();
 
-		System.out.println(sourceData);
-
- 
+		// log.info("Source Data: {}", sourceData);
 
 		for (SourceExceptionEntity sourceEntity : sourceData) {
 
-			System.out.println(sourceEntity);
-
- 
-
-			System.out.println(sourceEntity.getExceptionId());
-
- 
-
-			// TemaMongoEntity existingEntity =
-
-			// temaMongoRepository.findById(sourceEntity.getExceptionId()).get();
-
- 
+			// log.debug("Source Entity: {}", sourceEntity);
 
 			Optional<TemaExceptionEntity> existingEntityOptional = temaExceptionRepository
 
@@ -332,49 +120,23 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 				String exceptionType = temaExceptionEntity.getExceptionType();
 
-				System.out.println(exceptionId + " " + exceptionType);
+				// log.info("Creating Tema Exception Entity - ID: {}, Type: {}", exceptionId,
+
+				// exceptionType);
 
 				String processId = fetchProcessId(exceptionId, exceptionType);
 
-				System.out.println(processId);
+				// log.info("Process ID: {}", processId);
 
 				temaExceptionEntity.setProcessId(processId);
 
 				temaExceptionRepository.save(temaExceptionEntity);
 
-			} else {
-
-				System.out.println(" data already present");
-
 			}
-
- 
-
-//			if (existingEntity == null) {
-
-//				
-
-//				TemaMongoEntity temaExceptionEntity = createTemaExceptionEntity(sourceEntity);
-
-//				String exceptionId  = temaExceptionEntity.getExceptionId();
-
-//				String exceptionType = temaExceptionEntity.getExceptionType();
-
-//				System.out.println(exceptionId +" "+ exceptionType);
-
-//				String processId = fetchProcessId(exceptionId, exceptionType);
-
-//				temaExceptionEntity.setProcessId(processId);
-
-//				temaMongoRepository.save(temaExceptionEntity);
-
-//			}
 
 		}
 
 	}
-
- 
 
 	private TemaExceptionEntity createTemaExceptionEntity(SourceExceptionEntity sourceEntity) {
 
@@ -408,23 +170,13 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		temaExceptionEntity.setAssign("ASSIGN");
 
-		temaExceptionEntity.setResolutionCount("0");
+		temaExceptionEntity.setResolutionCount(-1);
 
 		return temaExceptionEntity;
 
 	}
 
- 
-
 	public String fetchProcessId(String exceptionId, String exceptionType) {
-
- 
-
-		// Map<String, String> mapExceptionId = Collections.singletonMap("businessKey",
-
-		// exceptionId);
-
- 
 
 		Map<String, Object> requestMap = new HashMap<>();
 
@@ -442,11 +194,7 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		requestMap.put("variables", variablesMap);
 
-		// Log the JSON request data
-
-		System.out.println("JSON Request: " + requestMap);
-
- 
+		// log.debug("JSON Request: {}", requestMap);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -458,51 +206,23 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		} catch (JsonProcessingException e) {
 
-			// TODO Auto-generated catch block
+			// log.error("Error converting request to JSON", e);
 
-			e.printStackTrace();
+			throw new RuntimeException("Error converting request to JSON", e);
 
 		}
-
- 
 
 		String externalApiUrl = "http://" + ipAddress
 
 				+ ":8080/engine-rest/process-definition/key/ApprovalProcess/start";
 
-//		HttpHeaders headers = new HttpHeaders();
-
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-
-//		HttpEntity<String> requestEntity = new HttpEntity<>(exceptionIdJson, headers);
-
 		ResponseEntity<String> response = postJsonToExternalApi(externalApiUrl, exceptionIdJson);
 
-		return extractProcessssIdFromResponse(response.getBody());
+		return extractProcessIdFromResponse(response.getBody());
 
 	}
 
- 
-
-	public ResponseEntity<String> postJsonToExternalApi(String externalApiUrl, String requestBodyJson) {
-
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		HttpEntity<String> requestEntity = new HttpEntity<>(requestBodyJson, headers);
-
-		return restTemplate.postForEntity(externalApiUrl, requestEntity, String.class);
-
-	}
-
- 
-
-// new migration code ends here	
-
- 
-
-	public String extractProcessssIdFromResponse(String responseBody) {
+	public String extractProcessIdFromResponse(String responseBody) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -514,11 +234,9 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		} catch (Exception e) {
 
-			// Handle JSON parsing exception
+			// log.error("Error parsing JSON response", e);
 
-			e.printStackTrace();
-
-			return null;
+			throw new RuntimeException("Error parsing JSON response", e);
 
 		}
 
@@ -528,37 +246,19 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 	}
 
- 
+	public TemaExceptionEntity getExceptionDetails(String exceptionId) {
 
-	public String mapToJson(Map<String, String> map) {
+		Optional<TemaExceptionEntity> exceptionOptional = temaExceptionRepository.findById(exceptionId);
 
-		ObjectMapper objectMapper = new ObjectMapper();
+		if (exceptionOptional.isPresent()) {
 
-		try {
+			TemaExceptionEntity exception = exceptionOptional.get();
 
-			return objectMapper.writeValueAsString(map);
+			updateExceptionStatus(exception);
 
-		} catch (JsonProcessingException e) {
+			return exception;
 
-			throw new RuntimeException("Error converting map to JSON", e);
-
-		}
-
-	}
-
- 
-
-	public String stringtoJson(String data) {
-
-		try {
-
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			return objectMapper.writeValueAsString(data);
-
-		} catch (JsonProcessingException e) {
-
-			e.printStackTrace();
+		} else {
 
 			return null;
 
@@ -566,109 +266,207 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 	}
 
- 
-
-//	public Optional<TemaMongoEntity> getExceptionDetails(String exceptionId) {
-
-//		try {
-
-//			return temaMongoRepository.findById(exceptionId);
-
-//		} catch (Exception e) {
-
-//			e.printStackTrace();
-
-//			return Optional.empty();
-
-//		}
-
-//	}
-
- 
-
-	public TemaExceptionEntity getExceptionDetails(String exceptionId) {
-
-		System.out.println("inside service " + exceptionId);
-
-		Optional<TemaExceptionEntity> exceptionOptional = temaExceptionRepository.findById(exceptionId);
-
- 
-
-		TemaExceptionEntity exception = null;
-
- 
-
-		if (exceptionOptional.isPresent()) {
-
-			exception = exceptionOptional.get();
-
-		}
-
- 
-
-		System.out.println(exception);
+	public List<TemaExceptionEntity> getAllTemaException() {
 
 		try {
 
-			updateExceptionStatus(exception);
+			List<TemaExceptionEntity> exceptions = temaExceptionRepository.findAll();
 
-		} catch (JsonMappingException e) {
-
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-
-		} catch (JsonProcessingException e) {
-
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-
-		}
-
-		return exception;
-
-	}
-
- 
-
-	public List<TemaExceptionEntity> showAllException() {
-
-		List<TemaExceptionEntity> exceptions = temaExceptionRepository.findAll();
-
-		for (TemaExceptionEntity exception : exceptions) {
-
-			System.out.println("----------------------------outside update exception----------------");
-
-			try {
+			for (TemaExceptionEntity exception : exceptions) {
 
 				updateExceptionStatus(exception);
 
-			} catch (JsonMappingException e) {
+			}
 
-				// TODO Auto-generated catch block
+			List<TemaExceptionEntity> reversedExceptions = new ArrayList<>(exceptions);
 
-				e.printStackTrace();
+			Collections.reverse(reversedExceptions);
 
-			} catch (JsonProcessingException e) {
+			return reversedExceptions;
 
-				// TODO Auto-generated catch block
+		} catch (Exception e) {
 
-				e.printStackTrace();
+			// log.error("An error occurred while retrieving data from
+
+			// TemaExceptionRepository", e);
+
+			throw new RuntimeException("An error occurred while retrieving data from TemaExceptionRepository", e);
+
+		}
+
+	}
+
+	public String assignExceptionToGroup(Map<String, String> assignGroup) {
+
+		String processId = getProcessId(assignGroup.get("exceptionId"));
+
+		String taskId = fetchTaskId(processId);
+
+		String groupId = assignGroup.get("groupId");
+
+		assignGroup.put("type", "candidate");
+
+		assignGroup.remove("exceptionId");
+
+		String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task/" + taskId + "/identity-links";
+
+		String assignGroupJson = mapToJson(assignGroup);
+
+		ResponseEntity<String> response = postJsonToExternalApi(externalApiUrl, assignGroupJson);
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+
+			updateCandidateGroup(taskId, groupId);
+
+			deleteOtherUser(taskId);
+
+			return taskId;
+
+		} else {
+
+			throw new RuntimeException("External API returned an error: " + response.getBody());
+
+		}
+
+	}
+
+	public ResponseEntity<String> deleteOtherUser(String taskId) {
+
+		try {
+
+			String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task/" + taskId
+
+					+ "/identity-links/delete";
+
+			String jsonString = "{ \"type\":\"candidate\",\"groupId\":\"other\"}";
+
+			ResponseEntity<String> response = postJsonToExternalApi(externalApiUrl, jsonString);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+
+				return ResponseEntity.ok("exception from other block deleted");
+
+			} else {
+
+				return ResponseEntity.status(response.getStatusCode())
+
+						.body("External API returned an error: " + response.getBody());
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+
+					.body("Error occurred while processing the request");
+
+		}
+
+	}
+
+	public ResponseEntity<String> updateCandidateGroup(String taskId, String groupId) {
+
+		try {
+
+			String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task/" + taskId
+
+					+ "/variables/candidateGroups";
+
+			HttpHeaders headers = new HttpHeaders();
+
+			headers.setContentType(MediaType.APPLICATION_JSON);
+
+			String jsonString = "{\"value\":\"" + groupId + "\",\"type\":\"String\"}";
+
+			ResponseEntity<String> response = restTemplate.exchange(externalApiUrl, HttpMethod.PUT,
+
+					new HttpEntity<>(jsonString, headers), String.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+
+				return ResponseEntity.ok("Updated the group");
+
+			} else {
+
+				return ResponseEntity.status(response.getStatusCode())
+
+						.body("External API returned an error: " + response.getBody());
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+
+					.body("Error occurred while processing the request");
+
+		}
+
+	}
+
+	public List<TemaExceptionEntity> getUserAssignedExceptions(String userId) {
+
+		List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
+
+		String externalApiUrl1 = "http://" + ipAddress + ":8080/engine-rest/task?assignee=" + userId
+
+				+ "&name=Perform Task";
+
+		String externalApiUrl2 = "http://" + ipAddress + ":8080/engine-rest/task?assignee=" + userId
+
+				+ "&name=Escalation";
+
+		JsonNode apiDataArray1 = restTemplate.getForObject(externalApiUrl1, JsonNode.class);
+
+		JsonNode apiDataArray2 = restTemplate.getForObject(externalApiUrl2, JsonNode.class);
+
+		matchingExceptions.addAll(processTaskData(apiDataArray1));
+
+		matchingExceptions.addAll(processTaskData(apiDataArray2));
+
+		return matchingExceptions;
+
+	}
+
+	private List<TemaExceptionEntity> processTaskData(JsonNode apiDataArray) {
+
+		List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
+
+		if (apiDataArray != null && apiDataArray.isArray()) {
+
+			for (JsonNode item : apiDataArray) {
+
+				if (item.has("processInstanceId")) {
+
+					String processInstanceIdFromApi = item.get("processInstanceId").asText();
+
+					TemaExceptionEntity matchingException = temaExceptionRepository
+
+							.findByProcessId(processInstanceIdFromApi);
+
+					if (matchingException != null) {
+
+						updateExceptionStatus(matchingException);
+
+						matchingExceptions.add(matchingException);
+
+					}
+
+				}
 
 			}
 
 		}
 
-		return exceptions;
+		return matchingExceptions;
 
 	}
 
- 
-
-	public void updateExceptionStatus(TemaExceptionEntity exception) throws JsonMappingException, JsonProcessingException {
-
-		System.out.println("-----------------------inside update status--------------------");
+	public void updateExceptionStatus(TemaExceptionEntity exception) {
 
 		String processId = exception.getProcessId();
 
@@ -678,11 +476,9 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		ResponseEntity<String> response = restTemplate.getForEntity(externalApiUrl, String.class);
 
-
 		String status = getExceptionStatus(response);
 
 		exception.setStatus(status);
-
 
 		String responseBody = response.getBody();
 
@@ -690,70 +486,72 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 			ObjectMapper objectMapper = new ObjectMapper();
 
-			JsonNode jsonArray = objectMapper.readTree(responseBody);
+			try {
 
+				JsonNode jsonArray = objectMapper.readTree(responseBody);
 
- 
+				if (jsonArray.isArray() && jsonArray.size() > 0) {
 
-			if (jsonArray.isArray() && jsonArray.size() > 0) {
+					// JsonNode firstObject = jsonArray.get(0);
 
-				JsonNode firstObject = jsonArray.get(0);
+					// JsonNode assigneeNode = firstObject.get("assignee");
 
-				JsonNode assigneeNode = firstObject.get("assignee");
+					// String assignee = assigneeNode.asText();
 
-				String assignee = assigneeNode.asText();
+					if (exception.getStatus().equals("Open")) {
 
+						String api = "http://" + ipAddress
 
+								+ ":8080/engine-rest/task/?candidateGroup=other&processInstanceId=" + processId;
 
+						ResponseEntity<String> apiResponse = restTemplate.getForEntity(api, String.class);
 
-				if ((exception.getStatus().equals("Open"))) {
+						exception.setAssign(apiResponse.getBody().length() == 2 ? "Assigned" : "Assign");
 
-
-					String api= "http://" + ipAddress + ":8080/engine-rest/task/?candidateGroup=other&processInstanceId=" + processId;
-
-					ResponseEntity<String> apiResponse = restTemplate.getForEntity(api, String.class);
-
-
-					if(apiResponse.getBody().length() == 2) {
-
+					} else {
 
 						exception.setAssign("Assigned");
 
-
-
 					}
-
-					else {
-
-						exception.setAssign("Assign");
-
-
-					}	
-
-			}
-
-				else {
-
-					exception.setAssign("Assigned");
 
 				}
 
+			} catch (Exception e) {
+
+				throw new RuntimeException("Error in parsing error response", e);
 
 			}
 
 		}
 
-
-
 		temaExceptionRepository.save(exception);
 
 	}
 
+
+
+	public String fetchExceptionIdByProcessId(String processId) {
+
+	    Optional<TemaExceptionEntity> exceptionEntityOptional = temaExceptionRepository.findExceptionByProcessId(processId);
+
  
 
+	    if (exceptionEntityOptional.isPresent()) {
+
+	        TemaExceptionEntity exceptionEntity = exceptionEntityOptional.get();
+
+	        String exceptionId = exceptionEntity.getExceptionId();
+
+	        return exceptionId;
+
+	    }
+
+	        return "";
+
+	    
+
+	}
 	public String getExceptionStatus(ResponseEntity<String> response) {
-
-
 
 		String status = "Open";
 
@@ -761,16 +559,11 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 			String responseBody = response.getBody();
 
- 
-
 			if (responseBody != null) {
 
 				ObjectMapper objectMapper = new ObjectMapper();
 
 				JsonNode jsonArray = objectMapper.readTree(responseBody);
-
-
- 
 
 				if (jsonArray.isArray() && jsonArray.size() > 0) {
 
@@ -788,10 +581,7 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 					String assignee = assigneeNode.asText();
 
-
-
 					if (activity.equals("Perform Task")) {
-
 
 						if (assignee.equals("null")) {
 
@@ -805,10 +595,7 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 					} else if (activity.equals("Escalation")) {
 
-
 						if (assignee.equals("null")) {
-
-							System.out.println("hello");
 
 							return "Open";
 
@@ -818,92 +605,293 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 						}
 
-					}
-
- 
-
-					else if (activity.equals("4-Eye check")) {
+					} else if (activity.equals("4-Eye check")) {
 
 						return "Resolved";
 
-					}
-
- 
-
-					else if (activityType.equals("noneEndEvent")) {
+					} else if (activityType.equals("noneEndEvent")) {
 
 						return "Closed";
 
 					}
 
- 
+				}
+
+			}
+
+		} catch (Exception e) {
+
+			throw new RuntimeException("Error in parsing error response", e);
+
+		}
+
+		return status;
+
+	}
+
+	public List<TemaExceptionEntity> getUserAssignedFourEyeCheckUpExceptions(String userId) throws Exception {
+
+		String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task?assignee=" + userId
+
+				+ "&name=4-eye check";
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		JsonNode apiDataArray = restTemplate.getForObject(externalApiUrl, JsonNode.class);
+
+		if (apiDataArray == null || !apiDataArray.isArray()) {
+
+			throw new Exception("No exceptions found for user " + userId);
+
+		}
+
+		List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
+
+		for (JsonNode item : apiDataArray) {
+
+			if (item.has("processInstanceId")) {
+
+				String processInstanceIdFromApi = item.get("processInstanceId").asText();
+
+				TemaExceptionEntity matchingException = temaExceptionRepository
+
+						.findByProcessId(processInstanceIdFromApi);
+
+				if (matchingException != null) {
+
+					updateExceptionStatus(matchingException);
+
+					matchingExceptions.add(matchingException);
 
 				}
 
 			}
 
+		}
 
- 
+		return matchingExceptions;
+
+	}
+
+	public List<TemaExceptionEntity> getUnclaimedPerformTaskExceptions(String userId) throws Exception {
+
+		String initialApiUrl = "http://" + ipAddress + ":8080/engine-rest/group?member=" + userId;
+
+		JsonNode apiDataArray = restTemplate.getForObject(initialApiUrl, JsonNode.class);
+
+		if (apiDataArray == null || !apiDataArray.isArray()) {
+
+			throw new Exception("No groups found for user " + userId);
+
+		}
+
+		List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
+
+		for (JsonNode item : apiDataArray) {
+
+			if (item.has("id")) {
+
+				String groupId = item.get("id").asText();
+
+				String groupApiUrl = "http://" + ipAddress + ":8080/engine-rest/task?candidateGroup=" + groupId;
+
+				try {
+
+					JsonNode apiDataArray2 = restTemplate.getForObject(groupApiUrl, JsonNode.class);
+
+					for (JsonNode item2 : apiDataArray2) {
+
+						if (item2.has("processInstanceId") && !(item2.get("name").asText()).equals("4-Eye check")) {
+
+							String processInstanceIdFromApi = item2.get("processInstanceId").asText();
+
+							TemaExceptionEntity matchingException = temaExceptionRepository
+
+									.findByProcessId(processInstanceIdFromApi);
+
+							if (matchingException != null) {
+
+								matchingExceptions.add(matchingException);
+
+								updateExceptionStatus(matchingException);
+
+							}
+
+						}
+
+					}
+
+				} catch (HttpStatusCodeException e) {
+
+					throw new RuntimeException("Failed to fetch data", e);
+
+				}
+
+			}
+
+		}
+
+		return matchingExceptions;
+
+	}
+
+	public List<TemaExceptionEntity> getUnclaimedFourEyeExceptions(String userId) {
+
+		List<TemaExceptionEntity> matchingExceptions = new ArrayList<>();
+
+		String initialApiUrl = "http://" + ipAddress + ":8080/engine-rest/group?member=" + userId;
+
+		try {
+
+			JsonNode apiDataArray = restTemplate.getForObject(initialApiUrl, JsonNode.class);
+
+			if (apiDataArray != null && apiDataArray.isArray()) {
+
+				for (JsonNode item : apiDataArray) {
+
+					if (item.has("id")) {
+
+						String groupId = item.get("id").asText();
+
+						String groupApiUrl = "http://" + ipAddress + ":8080/engine-rest/task?candidateGroup=" + groupId;
+
+						try {
+
+							JsonNode apiDataArray2 = restTemplate.getForObject(groupApiUrl, JsonNode.class);
+
+							for (JsonNode item2 : apiDataArray2) {
+
+								if (item2.has("processInstanceId")
+
+										&& "4-Eye check".equals(item2.get("name").asText())) {
+
+									String processInstanceIdFromApi = item2.get("processInstanceId").asText();
+
+									TemaExceptionEntity matchingException = temaExceptionRepository
+
+											.findByProcessId(processInstanceIdFromApi);
+
+									if (matchingException != null) {
+
+										matchingExceptions.add(matchingException);
+
+										updateExceptionStatus(matchingException);
+
+									}
+
+								}
+
+							}
+
+						} catch (HttpStatusCodeException e) {
+
+							throw new RuntimeException("Failed to fetch data for group: " + groupId, e);
+
+						}
+
+					}
+
+				}
+
+			}
+
+		} catch (HttpStatusCodeException e) {
+
+			throw new RuntimeException("Failed to fetch initial data for user: " + userId, e);
+
+		}
+
+		return matchingExceptions;
+
+	}
+
+	public ResponseEntity<String> claimExceptionByUser(Map<String, String> userExceptionIdMap) {
+
+		try {
+
+			String processId = getProcessId(userExceptionIdMap.get("exceptionId"));
+
+			String taskId = fetchTaskId(processId);
+
+			userExceptionIdMap.remove("exceptionId");
+
+			String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task/" + taskId + "/claim";
+
+			String assignUserJson = mapToJson(userExceptionIdMap);
+
+			ResponseEntity<String> response = postJsonToExternalApi(externalApiUrl, assignUserJson);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+
+				return ResponseEntity.ok("Data sent to Spring Boot and external API successfully");
+
+			} else {
+
+				return ResponseEntity.status(response.getStatusCode())
+
+						.body("External API returned an error: " + response.getBody());
+
+			}
 
 		} catch (Exception e) {
 
-			System.out.println("inside getStatus of service");
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+
+					.body("Error occurred while processing the request");
+
+		}
+
+	}
+
+	public ResponseEntity<String> completeFourEyeCheckUpTask(String exceptionId) {
+
+		try {
+
+			String processId = getProcessId(exceptionId);
+
+			String taskId = fetchTaskId(processId);
+
+			String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task/" + taskId + "/complete";
+
+			String jsonString = "{ \"variables\": { \"i\": { \"value\": 0 } } }";
+
+			ResponseEntity<String> response = postJsonToExternalApi(externalApiUrl, jsonString);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+
+				return ResponseEntity.ok("Group to Four Eye Check done !!!");
+
+			} else {
+
+				return ResponseEntity.status(response.getStatusCode())
+
+						.body("External API returned an error: " + response.getBody());
+
+			}
+
+		} catch (Exception e) {
 
 			e.printStackTrace();
 
-		}
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
-		System.out.println(status);
-
-		return "Open";
-
-	}
-
- 
-
-	public String getProcessId(String exceptionId) {
-
-		Optional<TemaExceptionEntity> exceptionOptional = temaExceptionRepository.findById(exceptionId);
-
- 
-
-		if (exceptionOptional.isPresent()) {
-
-			TemaExceptionEntity exception = exceptionOptional.get();
-
-			return exception.getProcessId();
-
-		} else {
-
-			// Handle the case where the exception with the given ID is not found
-
-			// You might want to return a default value or throw an exception here
-
-			return null; // or throw an exception
+					.body("Error occurred while processing the request");
 
 		}
 
 	}
-
- 
 
 	public List<Map<String, Object>> getExceptionHistory(String exceptionId) {
 
 		Optional<TemaExceptionEntity> exceptionOptional = temaExceptionRepository.findById(exceptionId);
 
- 
-
 		TemaExceptionEntity exception = null;
-
- 
 
 		if (exceptionOptional.isPresent()) {
 
 			exception = exceptionOptional.get();
-
-			System.out.println("--------------------------history----------------------");
-
-			System.out.println(exception);
 
 		}
 
@@ -917,47 +905,25 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		String responseBody = response.getBody();
 
- 
-
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		List<Map<String, Object>> historyList = new ArrayList<>();
-
- 
 
 		try {
 
 			JsonNode jsonArray = objectMapper.readTree(responseBody);
 
-			System.out.println("-------------------------------------history----------------------------------------");
-
-			System.out.println(jsonArray);
-
- 
-
 			if (jsonArray.isArray()) {
 
-				System.out.println(" ---------------its working------------------");
-
 				for (JsonNode jsonObject : jsonArray) {
-
-					System.out.println(" ---------------its working------------------");
-
-					// Extract the required attributes
 
 					String taskName = jsonObject.get("name").asText();
 
 					String taskId = jsonObject.get("id").asText();
 
-					System.out.println(taskName);
-
-					// String user = jsonObject.get("assignee").asText();
-
 					String startTime = jsonObject.get("startTime").asText();
 
 					String endTime = jsonObject.get("endTime").asText();
-
-					// Create a map for the extracted object
 
 					Map<String, Object> outerMap = new HashMap<>();
 
@@ -965,7 +931,7 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 					outerMap.put("startTime", startTime);
 
-					Map<String, Object> extractedObject = getEcxeptionHistoryForUserGroup(processId, taskId);
+					Map<String, Object> extractedObject = getExceptionHistoryForUserGroup(processId, taskId);
 
 					outerMap.put("groupId", extractedObject.get("groupId"));
 
@@ -976,8 +942,6 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 					outerMap.put("userTime", extractedObject.get("userTime"));
 
 					outerMap.put("endTime", endTime);
-
-					// outerMap.put("extractedObject", extractedObject);
 
 					historyList.add(outerMap);
 
@@ -993,31 +957,21 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		return historyList;
 
- 
-
 	}
 
- 
-
-	private Map<String, Object> getEcxeptionHistoryForUserGroup(String processId, String taskId) {
+	private Map<String, Object> getExceptionHistoryForUserGroup(String processId, String taskId) {
 
 		Map<String, Object> resultMap = new HashMap<>();
 
-		String externalApiUrl = "http://" + ipAddress
+		String candidateLinkUrl = "http://" + ipAddress
 
 				+ ":8080/engine-rest/history/identity-link-log?rootProcessInstanceId=" + processId + "&taskId=" + taskId
 
-				+ "&operationType=add&type=candidate";
+				+ "&operationType=add&type=candidate" + "&sortBy=time&sortOrder=asc";
 
-		ResponseEntity<String> response = restTemplate.getForEntity(externalApiUrl, String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity(candidateLinkUrl, String.class);
 
 		String responseBody = response.getBody();
-
-		System.out.println(" hi i am here heeehehehehe");
-
-		System.out.println(responseBody);
-
- 
 
 		try {
 
@@ -1025,33 +979,17 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 			JsonNode jsonArray = objectMapper.readTree(responseBody);
 
- 
-
 			if (jsonArray.isArray() && jsonArray.size() > 0) {
 
 				JsonNode lastObject = jsonArray.get(jsonArray.size() - 1);
-
- 
 
 				String groupTime = lastObject.get("time").asText();
 
 				String groupId = lastObject.get("groupId").asText();
 
- 
-
-				System.out.println("Time: " + groupTime);
-
-				System.out.println("GroupId: " + groupId);
-
 				resultMap.put("groupTime", groupTime);
 
 				resultMap.put("groupId", groupId);
-
- 
-
-			} else {
-
-				System.out.println("The JSON array is empty.");
 
 			}
 
@@ -1061,22 +999,15 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		}
 
- 
-
-		String externalApiUrl2 = "http://" + ipAddress
+		String assigneeLinkUrl = "http://" + ipAddress
 
 				+ ":8080/engine-rest/history/identity-link-log?rootProcessInstanceId=" + processId + "&taskId=" + taskId
 
 				+ "&operationType=add&type=assignee";
 
-		ResponseEntity<String> response2 = restTemplate.getForEntity(externalApiUrl2, String.class);
+		ResponseEntity<String> response2 = restTemplate.getForEntity(assigneeLinkUrl, String.class);
 
 		String responseBody2 = response2.getBody();
-
-
-		System.out.println(responseBody2);
-
- 
 
 		try {
 
@@ -1084,35 +1015,17 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 			JsonNode jsonArray = objectMapper.readTree(responseBody2);
 
- 
-
 			if (jsonArray.isArray() && jsonArray.size() > 0) {
 
 				JsonNode lastObject = jsonArray.get(jsonArray.size() - 1);
-
- 
 
 				String userTime = lastObject.get("time").asText();
 
 				String userId = lastObject.get("userId").asText();
 
- 
-
-				System.out.println("User Time: " + userTime);
-
-				System.out.println("User Id: " + userId);
-
 				resultMap.put("userTime", userTime);
 
 				resultMap.put("userId", userId);
-
-				//
-
- 
-
-			} else {
-
-				System.out.println("The JSON array is empty.");
 
 			}
 
@@ -1122,15 +1035,611 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 		}
 
- 
-
-//		
-
 		return resultMap;
 
 	}
 
+	public String completeTask(Map<String, String> request, int value) {
+
+		try {
+
+			String exceptionId = request.get("exceptionId");
+
+			String processId = getProcessId(exceptionId);
+
+			String taskId = fetchTaskId(processId);
+
+			String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task/" + taskId + "/complete";
+
+			String jsonString = "{ \"variables\": { \"i\": { \"value\": " + value + " } } }";
+
+			ResponseEntity<String> response = postJsonToExternalApi(externalApiUrl, jsonString);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+
+				return "Task completed successfully.";
+
+			} else {
+
+				return "Error: External API returned an error - " + response.getBody();
+
+			}
+
+		} catch (Exception e) {
+
+			throw new RuntimeException("Error occurred while processing the request: " + e.getMessage(), e);
+
+		}
+
+	}
+
+	public void updateResolutionCount(String exceptionId, int resolutionCount) {
+
+		Optional<TemaExceptionEntity> optionalEntity = temaExceptionRepository.findById(exceptionId);
+
  
+
+		if (optionalEntity.isPresent()) {
+
+			TemaExceptionEntity entity = optionalEntity.get();
+
+			entity.setResolutionCount(resolutionCount);
+
+			temaExceptionRepository.save(entity);
+
+		} else {
+
+			throw new RuntimeException("Exception with ID " + exceptionId + " not found.");
+
+		}
+
+	}
+
+//	public Map<String, Object> getEscalationCount(String start, String end) {
+
+//		Map<String, Object> exceptionCountMap = new HashMap<>();
+
+//
+
+//		try {
+
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+//			Date startedAfter = dateFormat.parse(start);
+
+//			Date startedBefore = dateFormat.parse(end);
+
+//
+
+//			String encodedStartedAfter = URLEncoder.encode(toISOString(startedAfter), "UTF-8");
+
+//			String encodedStartedBefore = URLEncoder.encode(toISOString(startedBefore), "UTF-8");
+
+//
+
+//			String url = "http://localhost:8080/engine-rest/history/task/count";
+
+//			URI uri1 = URI.create(url + "?startedAfter=" + encodedStartedAfter + "&taskName=Escalation"
+
+//					+ "&startedBefore=" + encodedStartedBefore);
+
+//			long escalationCount = sendHttpRequestAndGetCount(uri1);
+
+//			exceptionCountMap.put("escalationCount", escalationCount);
+
+//
+
+//			String taskName = URLEncoder.encode("Perform Task", "UTF-8");
+
+//			URI uri2 = URI.create(url + "?startedAfter=" + encodedStartedAfter + "&taskName=" + taskName
+
+//					+ "&startedBefore=" + encodedStartedBefore);
+
+//			long totalCount = sendHttpRequestAndGetCount(uri2);
+
+//			exceptionCountMap.put("total", totalCount);
+
+//
+
+//			String url3 = "http://localhost:8080/engine-rest/history/process-instance/count";
+
+//			URI uri3 = URI.create(url3 + "?startedAfter=" + encodedStartedAfter + "&startedBefore="
+
+//					+ encodedStartedBefore + "&finished=true");
+
+//			long completedCount = sendHttpRequestAndGetCount(uri3);
+
+//			exceptionCountMap.put("totalCompleted", completedCount);
+
+//
+
+//		} catch (Exception e) {
+
+//			exceptionCountMap.put("error", "An error occurred while fetching Total count.");
+
+//			e.printStackTrace();
+
+//		}
+
+//
+
+//		return exceptionCountMap;
+
+//	}
+
+//
+
+//	private Long sendHttpRequestAndGetCount(URI uri) throws IOException, InterruptedException {
+
+//
+
+//		HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+
+//		HttpClient client = HttpClient.newHttpClient();
+
+//		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+//		ObjectMapper objectMapper = new ObjectMapper();
+
+//		JsonNode jsonResponse = objectMapper.readTree(response.body());
+
+//		Long count = jsonResponse.get("count").asLong();
+
+//		return count;
+
+//	}
+
+
+
+public List<Map<String, Object>> getEscalationCount() throws Exception {
+
+		List<Map<String, Object>> monthlyData = new ArrayList<>();
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+		int currentYear = calendar.get(Calendar.YEAR);
+
+		int currentMonth = calendar.get(Calendar.MONTH);
+
+ 
+
+		for (int month = 0; month < 12; month++) {
+
+			int loopMonth = (currentMonth - month + 12) % 12;
+
+			int loopYear = currentYear;
+
+ 
+
+			if (currentMonth - month < 0) {
+
+				loopYear--;
+
+			}
+
+ 
+
+			Map<String, Object> exceptionCountMap = new HashMap<>();
+
+ 
+
+			calendar.set(Calendar.YEAR, loopYear);
+
+			calendar.set(Calendar.MONTH, loopMonth);
+
+ 
+
+			Date currentMonthStart = calendar.getTime();
+
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+			Date currentMonthEnd = calendar.getTime();
+
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+ 
+
+			String encodedStartedAfter = URLEncoder.encode(toISOString(currentMonthStart), "UTF-8");
+
+			String encodedStartedBefore = URLEncoder.encode(toISOString(currentMonthEnd), "UTF-8");
+
+ 
+
+			String url = "http://localhost:8080/engine-rest/history/task/count";
+
+			URI uri1 = URI.create(url + "?startedAfter=" + encodedStartedAfter + "&taskName=Escalation"
+
+					+ "&startedBefore=" + encodedStartedBefore);
+
+ 
+
+			long escalationCount = sendHttpRequestAndGetCount(uri1);
+
+			exceptionCountMap.put("escalationCount", escalationCount);
+
+ 
+
+			String taskName = URLEncoder.encode("Perform Task", "UTF-8");
+
+			URI uri2 = URI.create(url + "?startedAfter=" + encodedStartedAfter + "&taskName=" + taskName
+
+					+ "&startedBefore=" + encodedStartedBefore);
+
+			long totalCount = sendHttpRequestAndGetCount(uri2);
+
+			exceptionCountMap.put("total", totalCount);
+
+ 
+
+			String url3 = "http://localhost:8080/engine-rest/history/process-instance/count";
+
+			URI uri3 = URI.create(url3 + "?startedAfter=" + encodedStartedAfter + "&startedBefore="
+
+					+ encodedStartedBefore + "&finished=true");
+
+			long completedCount = sendHttpRequestAndGetCount(uri3);
+
+			exceptionCountMap.put("totalCompleted", completedCount);
+
+			exceptionCountMap.put("monthYear", String.format("%02d-%d", loopMonth + 1, loopYear));
+
+ 
+
+			monthlyData.add(exceptionCountMap);
+
+		}
+
+ 
+
+		return monthlyData;
+
+	}
+
+	private Long sendHttpRequestAndGetCount(URI uri) throws IOException, InterruptedException {
+
+ 
+
+		HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+
+		HttpClient client = HttpClient.newHttpClient();
+
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		JsonNode jsonResponse = objectMapper.readTree(response.body());
+
+		Long count = jsonResponse.get("count").asLong();
+
+		return count;
+
+	}
+
+	public static String toISOString(Date date) {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+		return dateFormat.format(date);
+
+	}
+
+//	public Map<String, Object> getresolutionTime(String start, String end) {
+
+//		Map<String, Object> resolutionTime = new HashMap<>();
+
+//
+
+//		try {
+
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+//			Date startedAfter = dateFormat.parse(start);
+
+//			Date startedBefore = dateFormat.parse(end);
+
+//
+
+//			String encodedStartedAfter = URLEncoder.encode(toISOString(startedAfter), "UTF-8");
+
+//			String encodedStartedBefore = URLEncoder.encode(toISOString(startedBefore), "UTF-8");
+
+//
+
+//			String url = "http://localhost:8080/engine-rest/history/process-instance?";
+
+//			URI uri = URI.create(url + "?startedAfter=" + encodedStartedAfter + "&taskName=Escalation"
+
+//					+ "&startedBefore=" + encodedStartedBefore + "&finished=true");
+
+//			resolutionTime = sendHttpRequestAndGetTime(uri);
+
+//
+
+//		} catch (Exception e) {
+
+//			resolutionTime.put("error", "An error occurred while fetching Total count.");
+
+//			e.printStackTrace();
+
+//		}
+
+//
+
+//		return resolutionTime;
+
+//	}
+
+	//
+
+//	private Map<String, Object> sendHttpRequestAndGetTime(URI uri) throws IOException, InterruptedException {
+
+//		Map<String, Object> resolutionTime = new HashMap<>();
+
+//		HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+
+//		HttpClient client = HttpClient.newHttpClient();
+
+//		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+//		ObjectMapper objectMapper = new ObjectMapper();
+
+//		JsonNode jsonArray = objectMapper.readTree(response.body());
+
+//
+
+//		long time = 0;
+
+//		long completedExceptions = 0;
+
+//		if (jsonArray.isArray()) {
+
+//
+
+//			for (JsonNode jsonObject : jsonArray) {
+
+//				time = jsonObject.get("durationInMillis").asLong();
+
+//				completedExceptions++;
+
+//			}
+
+//		}
+
+//
+
+//		double timeInHours = time / 3600000.0;
+
+//		double avgTime = timeInHours / completedExceptions;
+
+//
+
+//		resolutionTime.put("resolutionTime", timeInHours);
+
+//		resolutionTime.put("avgResolutionTime", avgTime);
+
+//		resolutionTime.put("totalResolvedException", completedExceptions);
+
+//
+
+//		return resolutionTime;
+
+//
+
+//	}
+
+	public List<Map<String, Object>> getDataForEveryMonth() throws Exception {
+
+		List<Map<String, Object>> monthlyData = new ArrayList<>();
+
+ 
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+		int currentYear = calendar.get(Calendar.YEAR);
+
+		int currentMonth = calendar.get(Calendar.MONTH);
+
+ 
+
+		for (int month = 0; month < 12; month++) {
+
+			int loopMonth = (currentMonth - month + 12) % 12;
+
+			int loopYear = currentYear;
+
+ 
+
+			if (currentMonth - month < 0) {
+
+				loopYear--;
+
+			}
+
+ 
+
+			calendar.set(Calendar.YEAR, loopYear);
+
+			calendar.set(Calendar.MONTH, loopMonth);
+
+ 
+
+			Date currentMonthStart = calendar.getTime();
+
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+ 
+
+			Date currentMonthEnd = calendar.getTime();
+
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+ 
+
+			String encodedCurrentMonthStart = URLEncoder.encode(toISOString(currentMonthStart), "UTF-8");
+
+			String encodedCurrentMonthEnd = URLEncoder.encode(toISOString(currentMonthEnd), "UTF-8");
+
+ 
+
+			String url = "http://localhost:8080/engine-rest/history/process-instance?";
+
+			URI uri = URI.create(url + "?startedAfter=" + encodedCurrentMonthStart + "&taskName=Escalation"
+
+					+ "&startedBefore=" + encodedCurrentMonthEnd + "&finished=true");
+
+ 
+
+			Map<String, Object> resolutionTime = sendHttpRequestAndGetTime(uri, loopMonth, loopYear);
+
+			monthlyData.add(resolutionTime);
+
+ 
+
+//	        if (loopMonth == currentMonth && loopYear == currentYear) {
+
+//	            // Move the current month data to the end
+
+//	            monthlyData.remove(monthlyData.size() - 1);
+
+//	            monthlyData.add(resolutionTime);
+
+//	        }
+
+		}
+
+ 
+
+		return monthlyData;
+
+	}
+
+	private Map<String, Object> sendHttpRequestAndGetTime(URI uri, int month, int year)
+
+			throws IOException, InterruptedException {
+
+		Map<String, Object> resolutionTime = new HashMap<>();
+
+ 
+
+		try {
+
+			HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+
+			HttpClient client = HttpClient.newHttpClient();
+
+			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+ 
+
+			if (response.statusCode() == 200) {
+
+				ObjectMapper objectMapper = new ObjectMapper();
+
+				JsonNode jsonArray = objectMapper.readTree(response.body());
+
+ 
+
+				long time = 0;
+
+				long completedExceptions = 0;
+
+ 
+
+				if (jsonArray.isArray()) {
+
+					for (JsonNode jsonObject : jsonArray) {
+
+						time += jsonObject.get("durationInMillis").asLong();
+
+						completedExceptions++;
+
+					}
+
+				}
+
+ 
+
+				double timeInHours = time / 3600000.0;
+
+				double avgTime = completedExceptions == 0 ? 0 : timeInHours / completedExceptions;
+
+ 
+
+				resolutionTime.put("resolutionTime", timeInHours);
+
+				resolutionTime.put("avgResolutionTime", avgTime);
+
+				resolutionTime.put("totalResolvedException", completedExceptions);
+
+ 
+
+				resolutionTime.put("monthYear", String.format("%02d-%d", month + 1, year));
+
+			} else {
+
+ 
+
+				resolutionTime.put("resolutionTime", 0.0);
+
+				resolutionTime.put("avgResolutionTime", 0.0);
+
+				resolutionTime.put("totalResolvedException", 0L);
+
+				resolutionTime.put("monthYear", String.format("%02d-%d", month + 1, year));
+
+			}
+
+		} catch (Exception e) {
+
+ 
+
+		}
+
+ 
+
+		return resolutionTime;
+
+	}
+
+	public ResponseEntity<String> postJsonToExternalApi(String externalApiUrl, String jsonBody) {
+
+		try {
+
+			HttpHeaders headers = new HttpHeaders();
+
+			headers.setContentType(MediaType.APPLICATION_JSON);
+
+			HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
+
+			return restTemplate.postForEntity(externalApiUrl, requestEntity, String.class);
+
+		} catch (Exception e) {
+
+			throw new RuntimeException("Error while sending data to the external API: " + e.getMessage(), e);
+
+		}
+
+	}
+
+	public String mapToJson(Map<String, String> map) {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+
+			return objectMapper.writeValueAsString(map);
+
+		} catch (JsonProcessingException e) {
+
+			throw new RuntimeException("Error converting map to JSON", e);
+
+		}
+
+	}
 
 	public String fetchTaskId(String processId) {
 
@@ -1164,7 +1673,7 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 			} catch (Exception e) {
 
-				e.printStackTrace();
+				throw new RuntimeException("Error parsing response to fetchTaskId: " + e.getMessage(), e);
 
 			}
 
@@ -1174,66 +1683,38 @@ public class ExceptionManagementServiceImp implements ExceptionManagementService
 
 	}
 
- 
+	public String getProcessId(String exceptionId) {
 
-	public void updateResolutionCount(String exceptionId, String resolutionCount) {
+		Optional<TemaExceptionEntity> exceptionOptional = temaExceptionRepository.findById(exceptionId);
 
-		TemaExceptionEntity entity = temaExceptionRepository.findById(exceptionId).orElse(null);
+		if (exceptionOptional.isPresent()) {
 
-		if (entity != null) {
+			TemaExceptionEntity exception = exceptionOptional.get();
 
-			entity.setResolutionCount(resolutionCount);
+			return exception.getProcessId();
 
-			temaExceptionRepository.save(entity);
+		} else {
 
-		}
-
-	}
-
- 
-
-	public ResponseEntity<String> deleteOtherUser(String taskId) {
-
-		try {
-
-			String externalApiUrl = "http://" + ipAddress + ":8080/engine-rest/task/" + taskId
-
-					+ "/identity-links/delete";
-
-			String jsonString = "{ \"type\":\"candidate\",\"groupId\":\"other\"}";
-
-			System.out.println(jsonString);
-
-			ResponseEntity<String> response = postJsonToExternalApi(externalApiUrl, jsonString);
-
- 
-
-			if (response.getStatusCode().is2xxSuccessful()) {
-
-				return ResponseEntity.ok("Exception sent from group to escalation !!!");
-
-			} else {
-
-				System.out.println("Inside else of controller of group to 4 eye check");
-
-				return ResponseEntity.status(response.getStatusCode())
-
-						.body("External API returned an error: " + response.getBody());
-
-			}
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-
-					.body("Error occurred while processing the request");
+			return null;
 
 		}
 
 	}
 
- 
+	public JsonNode getUserGroups(String userId) throws Exception {
+
+		String initialApiUrl = "http://" + ipAddress + ":8080/engine-rest/group?member=" + userId;
+
+		JsonNode apiDataArray = restTemplate.getForObject(initialApiUrl, JsonNode.class);
+
+		if (apiDataArray == null || !apiDataArray.isArray()) {
+
+			throw new Exception("No groups found for user " + userId);
+
+		}
+
+		return apiDataArray;
+
+	}
 
 }
