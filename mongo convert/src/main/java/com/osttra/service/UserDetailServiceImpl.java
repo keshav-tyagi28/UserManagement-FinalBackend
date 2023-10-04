@@ -105,4 +105,12 @@ public class UserDetailServiceImpl implements UserDetailService{
 	}
 
 
+
+
+	@Override
+	public boolean isUsernameDuplicate(String username) {
+		return userRepository.existsById(username);
+	}
+
+
 }
