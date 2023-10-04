@@ -3,6 +3,8 @@ package com.osttra.controller;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +34,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.osttra.entity.User;
@@ -47,145 +48,134 @@ import com.osttra.service.UserGroupDetailsServiceImpl;
 import com.osttra.to.CustomResponse;
 import com.osttra.to.CustomResponseWithTotalRecords;
 
-
 @RestController
 @CrossOrigin
 @RequestMapping("/usergroups")
 public class UserGroupController {
-	
-	
-	
 
 	@Autowired
 	UserGroupDetailsService usergroupdetailservice;
-	
+
 	@Autowired
 	UserDetailService userdetailservice;
-	
+
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
 	UserGroupRepository userGroupRepository;
-	
-	 @Autowired
+
+	@Autowired
 	private RestTemplate restTemplate;
 
-	private String ip="10.196.22.55:8080";
-	////////////////////////////////////////////////// CRUD ///////////////////////////////////////////////////////////////////////////////
+	private String ip = "10.196.22.55:8080";
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(UserGroupController.class);
+
+	////////////////////////////////////////////////// CRUD
+	////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////////////
+
 	@PostMapping("/registerusergroup")
 	public ResponseEntity<?> addUserGroup(@RequestBody UserGroup userGroup, HttpServletRequest request) {
 
-		UserGroup existingUserGroup = usergroupdetailservice.getUserGroupById(userGroup.getGroupId());
+		try {
 
-		if (existingUserGroup != null) {
+			UserGroup existingUserGroup = usergroupdetailservice.getUserGroupById(userGroup.getGroupId());
 
-			CustomResponse<String> errorResponse = new CustomResponse<>("", "Duplicate Group", 409,
-					request.getServletPath());
-			return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+			if (existingUserGroup != null) {
+
+				CustomResponse<String> errorResponse = new CustomResponse<>("", "Duplicate Group", 409,
+						request.getServletPath());
+				return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+			}
+
+			UserGroup savedUserGroup = usergroupdetailservice.saveUserGroup(userGroup);
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode jsonObject = objectMapper.createObjectNode();
+			jsonObject.put("id", userGroup.getGroupId());
+			jsonObject.put("name", userGroup.getGroupName());
+			jsonObject.put("type", "organizational Unit");
+
+			String externalApiUrl = "http://" + ip + "/engine-rest/group/create";
+			String jsonPayload = jsonObject.toString();
+			ResponseEntity<String> responseEntity = userdetailservice.sendJsonToExternalApi(externalApiUrl,
+					HttpMethod.POST, jsonPayload);
+
+			CustomResponse<UserGroup> successResponse = new CustomResponse<>(savedUserGroup,
+					"User group added successfully", 200, request.getServletPath());
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		UserGroup savedUserGroup = usergroupdetailservice.saveUserGroup(userGroup);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		ObjectNode jsonObject = objectMapper.createObjectNode();
-		jsonObject.put("id", userGroup.getGroupId());
-		jsonObject.put("name", userGroup.getGroupName());
-		jsonObject.put("type", "organizational Unit");
-
-		String externalApiUrl = "http://" + ip + "/engine-rest/group/create";
-		String jsonPayload = jsonObject.toString();
-		ResponseEntity<String> responseEntity = userdetailservice.sendJsonToExternalApi(externalApiUrl, HttpMethod.POST,
-			jsonPayload);
-
-		CustomResponse<UserGroup> successResponse = new CustomResponse<>(savedUserGroup,
-				"User group added successfully", 200, request.getServletPath());
-		return new ResponseEntity<>(successResponse, HttpStatus.OK);
-
 	}
-		
-		
+
 	@GetMapping(value = "/allgroups", produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<?> getAllUserGroups(@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request, @RequestParam(defaultValue = "1") int pageSize) {
+	public ResponseEntity<?> getAllUserGroups(@RequestParam(defaultValue = "1") int pageNumber,
+			HttpServletRequest request, @RequestParam(defaultValue = "1") int pageSize) {
 		try {
-			
-			Page<UserGroup> page = usergroupdetailservice.getAllUserGroupsWithPaging(pageNumber,pageSize);
+
+			Page<UserGroup> page = usergroupdetailservice.getAllUserGroupsWithPaging(pageNumber, pageSize);
 			List<UserGroup> pageContent = page.getContent();
 
 			int totalRecords = (int) page.getTotalElements();
-			
-			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(pageContent, "Listed all user groups", HttpStatus.OK.value(), request.getServletPath(), totalRecords);
-            return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(
+					pageContent, "Listed all user groups", HttpStatus.OK.value(), request.getServletPath(),
+					totalRecords);
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
-
+			logger.error("Bad Request: " + e.getMessage());
 			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
-
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
 		}
 	}
-	
-	
-	
+
 	@GetMapping(value = "/allgroupnames", produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<?> getUserGroups( HttpServletRequest request) {
+	public ResponseEntity<?> getUserGroups(HttpServletRequest request) {
 		try {
-			
-			List<UserGroup> usergroups= usergroupdetailservice.getAllUserGroups();
-			
-			CustomResponse<List<UserGroup>> successResponse = new CustomResponse<>(usergroups, "Listed all user groups", HttpStatus.OK.value(), request.getServletPath());
-            return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+			List<UserGroup> usergroups = usergroupdetailservice.getAllUserGroups();
+
+			CustomResponse<List<UserGroup>> successResponse = new CustomResponse<>(usergroups, "Listed all user groups",
+					HttpStatus.OK.value(), request.getServletPath());
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
-
+			logger.error("Bad Request: " + e.getMessage());
 			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
-
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		
+
 	@PutMapping("/updategroup/{usergroupid}")
 	public ResponseEntity<?> updateUserGroup(@PathVariable String usergroupid, @RequestBody UserGroup updatedUserGroup,
 			HttpServletRequest request) {
@@ -225,13 +215,13 @@ public class UserGroupController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
-
+			logger.error("Bad Request: " + e.getMessage());
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
-
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -239,8 +229,7 @@ public class UserGroupController {
 		}
 
 	}
-		
-	     
+
 	@DeleteMapping("/delete/{usergroupid}")
 	public ResponseEntity<?> deleteUser(@PathVariable String usergroupid, HttpServletRequest request) {
 		try {
@@ -262,7 +251,7 @@ public class UserGroupController {
 			String externalApiUrl = "http://" + ip + "/engine-rest/group/" + usergroupid;
 
 			ResponseEntity<String> responseEntity = userdetailservice.sendJsonToExternalApi(externalApiUrl,
-				HttpMethod.DELETE, null);
+					HttpMethod.DELETE, null);
 
 			usergroupdetailservice.deleteUserGroup(usergroupid);
 
@@ -271,138 +260,157 @@ public class UserGroupController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
 
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
-	    
-	    //////////////////////////////////////////// Details of specific user group ////////////////////////////////////////////////////////////
-	    
-	    @GetMapping("findusergroup/{usergroupid}")
-		@ResponseBody
-		public ResponseEntity<?> getSpecificUserGroup(@PathVariable String usergroupid, HttpServletRequest request) {
-		    try {
-		    	
-		        UserGroup userGroup = usergroupdetailservice.getUserGroupById(usergroupid);
 
-		        if (userGroup == null) {
-		        	
-		            CustomResponse<String> errorResponse = new CustomResponse<>("", "User group not found", HttpStatus.NOT_FOUND.value(), request.getServletPath());
-		            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-		            
-		        }
+	//////////////////////////////////////////// Details of specific user group
+	//////////////////////////////////////////// ////////////////////////////////////////////////////////////
 
-		        CustomResponse<UserGroup> successResponse = new CustomResponse<>(userGroup, "User group found", HttpStatus.OK.value(), request.getServletPath());
-		        return new ResponseEntity<>(successResponse, HttpStatus.OK);
-		        
-		    } catch (IllegalArgumentException e) {
+	@GetMapping("findusergroup/{usergroupid}")
+	@ResponseBody
+	public ResponseEntity<?> getSpecificUserGroup(@PathVariable String usergroupid, HttpServletRequest request) {
+		try {
 
-		        CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getServletPath());
-		        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-		        
-		    } catch (Exception e) {
+			UserGroup userGroup = usergroupdetailservice.getUserGroupById(usergroupid);
 
-		        CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
-		        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-		        
-		    }
-		}
-	    
-	    
-	    ////////////////////////////////////////// Users present in specific group /////////////////////////////////////////////////
-	    
-	    @GetMapping("/{usergroupid}/users")
-		@ResponseBody
-		public ResponseEntity<?> getUserGroups(@PathVariable String usergroupid, HttpServletRequest request) {
-			
-			try {
-				
-				UserGroup userGroup = usergroupdetailservice.getUserGroupById(usergroupid);
+			if (userGroup == null) {
 
-				if (userGroup == null) {
-					
-					CustomResponse<String> errorResponse = new CustomResponse<>("", "User group not found", HttpStatus.NOT_FOUND.value(), request.getServletPath());
-		            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-		            
-				}
+				CustomResponse<String> errorResponse = new CustomResponse<>("", "User group not found",
+						HttpStatus.NOT_FOUND.value(), request.getServletPath());
+				return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 
-				Set<String> userList = userGroup.getUserId();
-				
-				if(userList.size()==0)
-				{
-					CustomResponse<String> errorResponse = new CustomResponse<>("", "No users present in this group", HttpStatus.NO_CONTENT.value(), request.getServletPath());
-		            return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
-				}
-				Set<User> users = new HashSet<User> (); 
-				
-				for (String temp : userList) {
-					
-					User user = userdetailservice.getUserById(temp);
-					users.add(user);
-					
-				}
-				
-				CustomResponse<Set<User>> successResponse = new CustomResponse<>(users, " Group Users  displayed succesfully", HttpStatus.OK.value(), request.getServletPath());
-		        return new ResponseEntity<>(successResponse, HttpStatus.OK);
-				
-			} catch (IllegalArgumentException e) {
+			}
 
-		        CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getServletPath());
-		        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-		        
-		    } catch (Exception e) {
+			CustomResponse<UserGroup> successResponse = new CustomResponse<>(userGroup, "User group found",
+					HttpStatus.OK.value(), request.getServletPath());
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
-		        CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
-		        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-		        
-		    }
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
 		}
-	    
-	    
-	    ///////////////////////////////////////////////// Mapping //////////////////////////////////////////////////////////////////
-	    
-	    
-	    @PostMapping("/addusers/{groupId}")
-	    public ResponseEntity<Object> addmultiple(@RequestBody Map<String, String[]> requestBody, @PathVariable String groupId, HttpServletRequest request) {
-	       
-	    	 String[] userIds = requestBody.get("username");
-	    	 
-	        for (String userId : userIds) {
-	        	User user = userdetailservice.getUserById(userId);
+	}
+
+	////////////////////////////////////////// Users present in specific group
+	////////////////////////////////////////// /////////////////////////////////////////////////
+
+	@GetMapping("/{usergroupid}/users")
+	@ResponseBody
+	public ResponseEntity<?> getUserGroups(@PathVariable String usergroupid, HttpServletRequest request) {
+
+		try {
+
+			UserGroup userGroup = usergroupdetailservice.getUserGroupById(usergroupid);
+
+			if (userGroup == null) {
+
+				CustomResponse<String> errorResponse = new CustomResponse<>("", "User group not found",
+						HttpStatus.NOT_FOUND.value(), request.getServletPath());
+				return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+
+			}
+
+			Set<String> userList = userGroup.getUserId();
+
+			if (userList.size() == 0) {
+				CustomResponse<String> errorResponse = new CustomResponse<>("", "No users present in this group",
+						HttpStatus.NO_CONTENT.value(), request.getServletPath());
+				return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
+			}
+			Set<User> users = new HashSet<User>();
+
+			for (String temp : userList) {
+
+				User user = userdetailservice.getUserById(temp);
+				users.add(user);
+
+			}
+
+			CustomResponse<Set<User>> successResponse = new CustomResponse<>(users,
+					" Group Users  displayed succesfully", HttpStatus.OK.value(), request.getServletPath());
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+
+	}
+
+	///////////////////////////////////////////////// Mapping
+	///////////////////////////////////////////////// //////////////////////////////////////////////////////////////////
+
+	@PostMapping("/addusers/{groupId}")
+	public ResponseEntity<Object> addmultiple(@RequestBody Map<String, String[]> requestBody,
+			@PathVariable String groupId, HttpServletRequest request) {
+
+		try {
+
+			String[] userIds = requestBody.get("username");
+
+			for (String userId : userIds) {
+				User user = userdetailservice.getUserById(userId);
 
 				if (user != null) {
-	        	ResponseEntity<Object> response= addUserGroup(userId, groupId,request);
-				}
-				else
-				{
+					ResponseEntity<Object> response = addUserGroup(userId, groupId, request);
+				} else {
 					CustomResponse<String> errorResponse = new CustomResponse<>("", "User not found",
 							HttpStatus.NOT_FOUND.value(), request.getServletPath());
 					return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 				}
-				
-				
-				
-	        }
-	        
-	        return ResponseEntity.ok("Users added successfully"); 
-	    
-	    }
-	    
-	    
-	    
-		@PostMapping("/addusergroup/{userId}/{groupId}")
-		public ResponseEntity<Object> addUserGroup(@PathVariable String userId, @PathVariable String groupId,
-				HttpServletRequest request) {
+
+			}
+
+			return ResponseEntity.ok("Users added successfully");
+
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	@PostMapping("/addusergroup/{userId}/{groupId}")
+	public ResponseEntity<Object> addUserGroup(@PathVariable String userId, @PathVariable String groupId,
+			HttpServletRequest request) {
+
+		try {
 
 			User user = userdetailservice.getUserById(userId);
 
@@ -432,11 +440,25 @@ public class UserGroupController {
 
 			}
 
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	    
-		@PostMapping("/removeusergroup/{userId}/{groupId}")
-		public ResponseEntity<Object> removeUserGroup(@PathVariable String userId, @PathVariable String groupId,
-				HttpServletRequest request) {
+
+	}
+
+	@PostMapping("/removeusergroup/{userId}/{groupId}")
+	public ResponseEntity<Object> removeUserGroup(@PathVariable String userId, @PathVariable String groupId,
+			HttpServletRequest request) {
+
+		try {
 
 			User user = userdetailservice.getUserById(userId);
 
@@ -453,7 +475,7 @@ public class UserGroupController {
 				String externalApiUrl = "http://" + ip + "/engine-rest/group/" + groupId + "/members/" + userId;
 
 				ResponseEntity<String> responseEntity = userdetailservice.sendJsonToExternalApi(externalApiUrl,
-					HttpMethod.DELETE, "");
+						HttpMethod.DELETE, "");
 
 				CustomResponse<String> errorResponse = new CustomResponse<>("",
 						"User removed successfully from UserGroup", HttpStatus.OK.value(), request.getServletPath());
@@ -464,156 +486,111 @@ public class UserGroupController {
 						HttpStatus.NOT_FOUND.value(), request.getServletPath());
 				return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 			}
+
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	
-	    
-	    
-	    
-	    
-		@GetMapping("/{usergroupid}/usersnotingroup")
-		@ResponseBody
-		public ResponseEntity<?> getUserNotInGroups(@PathVariable String usergroupid, HttpServletRequest request) {
 
-			try {
+	}
 
-				UserGroup userGroup = usergroupdetailservice.getUserGroupById(usergroupid);
+	@GetMapping("/{usergroupid}/usersnotingroup")
+	@ResponseBody
+	public ResponseEntity<?> getUserNotInGroups(@PathVariable String usergroupid, HttpServletRequest request) {
 
-				if (userGroup == null) {
+		try {
 
-					CustomResponse<String> errorResponse = new CustomResponse<>("", "User group not found",
-							HttpStatus.NOT_FOUND.value(), request.getServletPath());
+			UserGroup userGroup = usergroupdetailservice.getUserGroupById(usergroupid);
 
-					return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+			if (userGroup == null) {
 
-				}
+				CustomResponse<String> errorResponse = new CustomResponse<>("", "User group not found",
+						HttpStatus.NOT_FOUND.value(), request.getServletPath());
 
-				Set<String> userList = userGroup.getUserId();
-
-				List<User> allUsers = userdetailservice.getAllUser();
-
-				Set<User> usersNotInGroup = new HashSet<User>();
-
-				for (User temp : allUsers) {
-
-					if (!userList.contains(temp.getUsername()) && !temp.getRole().equals("ROLE_ADMIN")) {
-
-						User user = userdetailservice.getUserById(temp.getUsername());
-
-						usersNotInGroup.add(user);
-
-					}
-
-				}
-
-				CustomResponse<Set<User>> successResponse = new CustomResponse<>(usersNotInGroup,
-						"User displayed succesfully", HttpStatus.OK.value(), request.getServletPath());
-
-				return new ResponseEntity<>(successResponse, HttpStatus.OK);
-
-			} catch (IllegalArgumentException e) {
-
-				CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
-						HttpStatus.BAD_REQUEST.value(), request.getServletPath());
-
-				return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-
-			} catch (Exception e) {
-
-				CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
-						HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
-
-				return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 
 			}
 
+			Set<String> userList = userGroup.getUserId();
+
+			List<User> allUsers = userdetailservice.getAllUser();
+
+			Set<User> usersNotInGroup = new HashSet<User>();
+
+			for (User temp : allUsers) {
+
+				if (!userList.contains(temp.getUsername()) && !temp.getRole().equals("ROLE_ADMIN")) {
+
+					User user = userdetailservice.getUserById(temp.getUsername());
+
+					usersNotInGroup.add(user);
+
+				}
+
+			}
+
+			CustomResponse<Set<User>> successResponse = new CustomResponse<>(usersNotInGroup,
+					"User displayed succesfully", HttpStatus.OK.value(), request.getServletPath());
+
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
+
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		@GetMapping("/search/resource")
-		public ResponseEntity<?> getResource(
-		    @RequestParam(name = "search", required = true) String search,
-		    @RequestParam(defaultValue = "1") int pageNumber,
-		    HttpServletRequest request) {
 
-		    try {
-		    	
-		        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
-		        Page<UserGroup> page = usergroupdetailservice.search(search, pageable);
+	}
 
-		        List<UserGroup> pageContent = page.getContent();
-		        int totalSearchResults = (int) page.getTotalElements();
+	@GetMapping("/search/resource")
+	public ResponseEntity<?> getResource(@RequestParam(name = "search", required = true) String search,
+			@RequestParam(defaultValue = "1") int pageNumber, HttpServletRequest request) {
 
-		        CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(
-		            pageContent,
-		            "Listed all searched usergroups",
-		            HttpStatus.OK.value(),
-		            request.getServletPath(),
-		            totalSearchResults
-		        );
+		try {
 
-		        return new ResponseEntity<>(successResponse, HttpStatus.OK);
+			Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+			Page<UserGroup> page = usergroupdetailservice.search(search, pageable);
 
-		    } catch (IllegalArgumentException e) {
+			List<UserGroup> pageContent = page.getContent();
+			int totalSearchResults = (int) page.getTotalElements();
 
-		        CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(
-		            null,
-		            "Bad Request: " + e.getMessage(),
-		            HttpStatus.BAD_REQUEST.value(),
-		            request.getRequestURI()
-		        );
+			CustomResponseWithTotalRecords<List<UserGroup>> successResponse = new CustomResponseWithTotalRecords<>(
+					pageContent, "Listed all searched usergroups", HttpStatus.OK.value(), request.getServletPath(),
+					totalSearchResults);
 
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
-		    } catch (Exception e) {
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
 
-		        CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(
-		            null,
-		            "Internal Server Error",
-		            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-		            request.getRequestURI()
-		        );
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
-		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-		    }
+		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
+			CustomResponse<List<UserGroup>> errorResponse = new CustomResponse<>(null, "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	}
+
 }
-	    
-	    
-	
-	
-

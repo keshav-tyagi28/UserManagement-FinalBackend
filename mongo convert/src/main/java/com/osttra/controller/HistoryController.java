@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,6 +72,8 @@ public class HistoryController {
 	private CustomResponseErrorHandler customResponseErrorHandler;
 
 	private String ip = "10.196.22.55:8080";
+	
+	private static final Logger logger = LoggerFactory.getLogger(HistoryController.class);
 
 	
 	@GetMapping("/claim/users/{username}")
@@ -105,8 +109,14 @@ public class HistoryController {
 
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
-		} catch (Exception e) {
-
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+			
+		}catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -145,8 +155,13 @@ public class HistoryController {
 
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
-		} catch (Exception e) {
-
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -184,8 +199,13 @@ public class HistoryController {
 
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
-		} catch (Exception e) {
-
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -225,8 +245,13 @@ public class HistoryController {
 
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
-		} catch (Exception e) {
-
+		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
+			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
+					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

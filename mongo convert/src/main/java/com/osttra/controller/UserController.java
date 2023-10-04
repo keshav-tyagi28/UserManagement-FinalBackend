@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.osttra.config.CustomResponseErrorHandler;
+import com.osttra.config.SecurityConfig;
 import com.osttra.entity.User;
 import com.osttra.entity.UserGroup;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -98,13 +102,15 @@ public class UserController {
 	private CustomResponseErrorHandler customResponseErrorHandler;
 
 	private String ip = "10.196.22.55:8080";
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	// register user can send usergroup id's as array
 	@PostMapping("/registeruser")
 	public ResponseEntity<Object> addUser(@RequestBody User user, HttpServletRequest request) {
 		try {
 
-			if (userRepository.existsById(user.getUsername())) {
+			if (userDetailsService.isUsernameDuplicate(user.getUsername())) {
 				// Username is already taken, return a response indicating it's not allowed
 				CustomResponse<String> errorResponse = new CustomResponse<>("", "Duplicate User", 409,
 						request.getServletPath());
@@ -151,10 +157,12 @@ public class UserController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -183,6 +191,8 @@ public class UserController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+			
+			logger.error("Bad Request: " + e.getMessage());
 
 			CustomResponse<List<User>> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
 
@@ -191,6 +201,8 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
 		} catch (Exception e) {
+			
+			logger.error("Internal Server Error", e.getMessage());
 
 			CustomResponse<List<User>> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 
@@ -245,12 +257,14 @@ public class UserController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request",
 					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 		}
 
 		catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -288,12 +302,16 @@ public class UserController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+			
+			logger.error("Bad Request: " + e.getMessage());
 
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
+			
+			logger.error("Internal Server Error", e.getMessage());
 
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
@@ -328,6 +346,8 @@ public class UserController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+			
+			logger.error("Bad Request: " + e.getMessage());
 
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getServletPath());
@@ -335,6 +355,8 @@ public class UserController {
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
+			
+			logger.error("Internal Server Error", e.getMessage());
 
 			CustomResponse<String> errorResponse = new CustomResponse<>("", "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getServletPath());
@@ -378,12 +400,14 @@ public class UserController {
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 		} catch (IllegalArgumentException e) {
+			logger.error("Bad Request: " + e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Bad Request: " + e.getMessage(),
 					HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
 
 			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
+			logger.error("Internal Server Error", e.getMessage());
 			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
 			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -420,6 +444,7 @@ public class UserController {
 	        return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
 	    } catch (IllegalArgumentException e) {
+	    	logger.error("Bad Request: " + e.getMessage());
 
 	        CustomResponse<List<User>> errorResponse = new CustomResponse<>(
 	            null,
@@ -431,6 +456,7 @@ public class UserController {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
 	    } catch (Exception e) {
+	    	logger.error("Internal Server Error", e.getMessage());
 
 	        CustomResponse<List<User>> errorResponse = new CustomResponse<>(
 	            null,
