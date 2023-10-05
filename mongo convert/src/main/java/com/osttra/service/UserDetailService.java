@@ -29,4 +29,8 @@ public interface UserDetailService {
 
 	public Page<User> getAllUsers(int pageNumber,int pageSize);
 
+
+
+	public boolean isUsernameDuplicate(String username);
+
 }

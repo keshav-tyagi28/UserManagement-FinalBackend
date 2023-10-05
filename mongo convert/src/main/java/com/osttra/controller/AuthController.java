@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +52,8 @@ public class AuthController {
 	  
 	  @Autowired
 	  JwtUtils jwtUtils;
+	  
+		private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 	  
 	  @PostMapping("/signin")
@@ -66,9 +70,14 @@ public class AuthController {
 	          List<String> roles = userDetails.getAuthorities().stream()
 	              .map(item -> item.getAuthority())
 	              .collect(Collectors.toList());
+	          
+	          logger.info("User authenticated successfully.");
 
 	          return ResponseEntity.ok(new JWTResponse(jwt, userDetails.getUsername(), roles));
 	      } catch (BadCredentialsException e) {
+	    	  
+	            logger.error("Authentication failed: Incorrect username or password.", e.getMessage());
+
 	          
 	          Map<String, String> response = new HashMap<>();
 	          response.put("message", "Incorrect username or password.");
@@ -78,11 +87,21 @@ public class AuthController {
 
 	  @PostMapping("/logout")
 	    public ResponseEntity<String> logout() {
-	        // Invalidate the user's authentication token
-	        SecurityContextHolder.clearContext();
-	        
-	        return ResponseEntity.ok("Logged out successfully");
-	        
+		  
+		  try {
+			  
+			// Invalidate the user's authentication token
+		        SecurityContextHolder.clearContext();
+		        
+		        return ResponseEntity.ok("Logged out successfully");
+		        
+			  
+		  }catch (Exception e) {
+	            logger.error("Logout failed", e);
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Logout failed");
+	        }
+		  
+	      
 	        
 	        
 	    }
