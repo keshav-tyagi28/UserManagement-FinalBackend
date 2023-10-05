@@ -127,6 +127,7 @@ public class SecurityConfig {
           auth.antMatchers("/api/auth/**").permitAll()
               .antMatchers("/api/test/**").permitAll()
               .antMatchers("/actuator").permitAll()
+              .antMatchers("/swagger-ui.html").permitAll()              
               .antMatchers("/signin").permitAll()
               .antMatchers("/users/**").permitAll()
               .antMatchers("/usergroups/**").permitAll()

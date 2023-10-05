@@ -20,7 +20,8 @@ package com.osttra.service;
 		List<SourceExceptionEntity> getAllFromSource();
 
  
-
+		public String fetchExceptionIdByProcessId(String processId);
+		
 	    SourceExceptionEntity addExceptionInSource(SourceExceptionEntity sourceData);
 
  

@@ -2,6 +2,7 @@ package com.osttra.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,7 @@ import com.osttra.repository.temaDatabase.UserGroupRepository;
 import com.osttra.repository.temaDatabase.UserRepository;
 import com.osttra.service.CustomUserDetailsService;
 import com.osttra.service.ExceptionManagementServiceImp;
+import com.osttra.service.HistoryServiceImpl;
 //import com.osttra.service.ExceptionManagementServiceImp;
 import com.osttra.service.UserDetailService;
 import com.osttra.service.UserGroupDetailsService;
@@ -33,9 +35,12 @@ import com.osttra.to.CustomResponse;
 @RequestMapping("/history")
 @RestController
 public class HistoryController {
-	
+
 	@Autowired
 	UserDetailService userDetailsService;
+
+	@Autowired
+	HistoryServiceImpl historyService;
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -71,34 +76,13 @@ public class HistoryController {
 
 	private String ip = "10.196.22.55:8080";
 
-	
 	@GetMapping("/claim/users/{username}")
 	public ResponseEntity<?> getUserHistory(@PathVariable String username, HttpServletRequest request) {
-		String externalApiUrl = "http://" + ip + "/engine-rest/history/user-operation?userId=" + username
-				+ "&operationType=Claim";
 
 		try {
 			// Initialize the RestTemplate
-			RestTemplate restTemplate = new RestTemplate();
 
-			// Make a GET request to the external API and get the JSON response
-			String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
-
-			// Initialize the ObjectMapper
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			// Parse the JSON response
-			JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-
-			// Traverse the array and extract rootProcessInstanceId
-			List<String> exceptionIds = new ArrayList<String>();
-			for (JsonNode node : jsonNode) {
-				String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
-				String id = exceptionManagementServiceImp.fetchExceptionIdByProcessId(rootProcessInstanceId);
-				if (id != "") {
-					exceptionIds.add(id);
-				}
-			}
+			List<String> exceptionIds = historyService.getUserHistory(username);
 
 			CustomResponse<List<String>> successResponse = new CustomResponse<>(exceptionIds, "exception id's ",
 					HttpStatus.OK.value(), request.getRequestURI());
@@ -114,32 +98,12 @@ public class HistoryController {
 
 	}
 
-	
-	
 	@GetMapping("/complete/users/{username}")
 	public ResponseEntity<?> getUserHistoryComplete(@PathVariable String username, HttpServletRequest request) {
-		String externalApiUrl = "http://" + ip + "/engine-rest/history/user-operation?userId=" + username
-				+ "&operationType=Complete";
 
 		try {
-			// Initialize the RestTemplate
-			RestTemplate restTemplate = new RestTemplate();
 
-			String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
-
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-
-			List<String> exceptionIds = new ArrayList<String>();
-			for (JsonNode node : jsonNode) {
-				String rootProcessInstanceId = node.get("rootProcessInstanceId").asText();
-				String id = exceptionManagementServiceImp.fetchExceptionIdByProcessId(rootProcessInstanceId);
-				if (id != "") {
-					exceptionIds.add(id);
-				}
-			}
-
+			List<String> exceptionIds = historyService.getUserHistoryComplete(username);
 			CustomResponse<List<String>> successResponse = new CustomResponse<>(exceptionIds, "exception id's ",
 					HttpStatus.OK.value(), request.getRequestURI());
 
@@ -153,34 +117,18 @@ public class HistoryController {
 		}
 
 	}
-	
-	
-	
 
 	@GetMapping("/completed/usergroup/{usergroupid}")
-	public ResponseEntity<?> getUserGroupHistoryCompleted(@PathVariable String usergroupid, HttpServletRequest request) {
-		String externalApiUrl = "http://" + ip + "/engine-rest/history/task/count?finished=true&taskHadCandidateGroup=" + usergroupid;
+	public ResponseEntity<?> getUserGroupHistoryCompleted(@PathVariable String usergroupid,
+			HttpServletRequest request) {
 
-		
 		try {
-			// Initialize the RestTemplate
-			RestTemplate restTemplate = new RestTemplate();
 
-			// Make a GET request to the external API and get the JSON response
-			String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
+			int count = historyService.getUserGroupHistoryCompleted(usergroupid);
 
-			// Initialize the ObjectMapper
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			// Parse the JSON response
-			JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-
-		    JsonNode countNode = jsonNode.get("count");
-		    int count= countNode.intValue();
-
-
-			CustomResponse<Integer> successResponse = new CustomResponse<>(count, " The Number of Completed Exceptions Of "+usergroupid,
-					HttpStatus.OK.value(), request.getRequestURI());
+			CustomResponse<Integer> successResponse = new CustomResponse<>(count,
+					" The Number of Completed Exceptions Of " + usergroupid, HttpStatus.OK.value(),
+					request.getRequestURI());
 
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
@@ -192,36 +140,17 @@ public class HistoryController {
 		}
 
 	}
-	
-	
-	
 
 	@GetMapping("/assigned/usergroup/{usergroupid}")
 	public ResponseEntity<?> getUserGroupHistoryAssigned(@PathVariable String usergroupid, HttpServletRequest request) {
-		String externalApiUrl = "http://" + ip + "/engine-rest/history/task/count?&taskHadCandidateGroup=" + usergroupid;
-		
-		
 
-		
 		try {
-			// Initialize the RestTemplate
-			RestTemplate restTemplate = new RestTemplate();
 
-			// Make a GET request to the external API and get the JSON response
-			String jsonResponse = restTemplate.getForObject(externalApiUrl, String.class);
+			int count = historyService.getUserGroupHistoryAssigned(usergroupid);
 
-			// Initialize the ObjectMapper
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			// Parse the JSON response
-			JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-
-		    JsonNode countNode = jsonNode.get("count");
-		    int count= countNode.intValue();
-
-
-			CustomResponse<Integer> successResponse = new CustomResponse<>(count, " The Number of Assigned Exceptions Of "+usergroupid,
-					HttpStatus.OK.value(), request.getRequestURI());
+			CustomResponse<Integer> successResponse = new CustomResponse<>(count,
+					" The Number of Assigned Exceptions Of " + usergroupid, HttpStatus.OK.value(),
+					request.getRequestURI());
 
 			return new ResponseEntity<>(successResponse, HttpStatus.OK);
 
@@ -233,4 +162,27 @@ public class HistoryController {
 		}
 
 	}
+
+	@GetMapping("/escalated/groups")
+	public ResponseEntity<?> getEscalatedExceptions(HttpServletRequest request) {
+
+		try {
+			Map<String, Integer> groupsescalated = historyService.getEscalated();
+
+			groupsescalated.remove("other");
+
+			CustomResponse<Map<String, Integer>> successResponse = new CustomResponse<>(groupsescalated,
+					" exceptions escalated by each group ", HttpStatus.OK.value(), request.getRequestURI());
+
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			CustomResponse<User> errorResponse = new CustomResponse<>(null, "Internal Server Error",
+					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
 }
